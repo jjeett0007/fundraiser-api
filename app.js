@@ -1,0 +1,70 @@
+require("dotenv").config();
+const express = require("express");
+const session = require("express-session");
+const passport = require("passport");
+const morgan = require("morgan");
+
+const bodyParser = require("body-parser");
+const path = require("path");
+const cors = require("cors");
+
+global.router = express.Router();
+global.catchAsync = require("./utils/catchAsync");
+global.getId = require("./utils/getId");
+global.statusCodeMap = require("./utils/statusCode");
+global.formatResponse = require("./utils/responseFormatter");
+global.handleResponse = require("./utils/handleResponse");
+global.httpStatus = require("http-status");
+
+const config = require("./config/index");
+const http = require("http");
+const routes = require("./route/v1/index");
+
+const PORT = config.port;
+const { app, server } = require("./socket/websocket");
+require("./lib/firebase");
+require("./lib/smtp");
+const { connectToDatabase } = require("./lib/database");
+
+
+app.use(cors());
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+  next();
+});
+
+app.use(
+  session({
+    secret: "myBigSecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  })
+);
+
+app.use(morgan("combined"));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+connectToDatabase();
+
+app.use((req, res, next) => {
+  // console.log(`Request size: ${req.headers['content-length']} bytes`);
+  // console.log(`Headers:`, req.headers);
+  next();
+});
+
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
+
+app.use("/v1", routes);
+
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

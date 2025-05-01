@@ -1,0 +1,51 @@
+const Joi = require("joi");
+
+const signupValidation = {
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required(),
+    profileName: Joi.object().keys({
+      firstName: Joi.string().required(),
+      lastName: Joi.string().required()
+    })
+  })
+};
+
+const loginvalidatoin = {
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required()
+  })
+};
+
+const otpCodeValidation = {
+  body: Joi.object().keys({
+    otpCode: Joi.number().required()
+  })
+};
+
+const userUpdateValidation = {
+  body: Joi.object()
+    .keys({
+      profileInfo: Joi.object().keys({
+        firstName: Joi.string(),
+        lastName: Joi.string(),
+        displayName: Joi.string(),
+        phoneNumber: Joi.string()
+      }),
+      avatar: Joi.string(),
+      address: Joi.object().keys({
+        country: Joi.string(),
+        state: Joi.string(),
+        city: Joi.string()
+      })
+    })
+    .min(1)
+};
+
+module.exports = {
+  signupValidation,
+  loginvalidatoin,
+  otpCodeValidation,
+  userUpdateValidation
+};
