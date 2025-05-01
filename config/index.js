@@ -1,11 +1,13 @@
 require("dotenv").config();
 const path = require("path");
 const Joi = require("joi");
+const { env } = require("process");
 
 const envVarsSchema = Joi.object()
   .keys({
     PORT: Joi.number(),
     PING: Joi.string().optional(),
+    NODE_ENV: Joi.string().valid("prod", "dev", "test").required(),
 
     MONGODB_USERNAME: Joi.string(),
     MONGODB_PASSWORD: Joi.string(),
@@ -56,6 +58,7 @@ if (error) {
 
 module.exports = {
   port: envVars.PORT,
+  env: envVars.NODE_ENV,
 
   mongoose: {
     username: envVars.MONGODB_USERNAME,
