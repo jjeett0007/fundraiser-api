@@ -1,6 +1,7 @@
 const { User, Otp } = require("../../model/index");
 const generateConfirmationCode = require("../../utils/codeGen");
 const sendVerificationEmail = require("../mailerService/sendVerificationEmail");
+const config = require("../../config/index");
 
 const resendOtp = async (userId) => {
   try {
@@ -34,7 +35,10 @@ const resendOtp = async (userId) => {
       });
     }
 
-    await sendVerificationEmail({ email: user.email, code });
+    if (config.env !== "test") {
+      await sendVerificationEmail({ email: user.email, code });
+    }
+
     return { code: 201, message: "OTP sent to your mail" };
   } catch (error) {
     return { code: 500, message: "Internal server error, Contact Support" };

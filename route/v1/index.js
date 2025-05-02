@@ -4,6 +4,7 @@ const otp = require("./otp");
 const userRouter = require("./user");
 const googleOauth = require("./googleOauth");
 const upload = require("./upload");
+const password = require("./password");
 
 const router = express.Router();
 
@@ -15,6 +16,10 @@ const defaultRoutes = [
   {
     path: "/otp",
     route: otp
+  },
+  {
+    path: "/password",
+    route: password
   },
   {
     path: "/user",

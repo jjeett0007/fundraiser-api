@@ -1,4 +1,5 @@
 const { User, Otp } = require("../../model/index");
+const config = require("../../config/index")
 const bcrypt = require("bcrypt");
 const generateConfirmationCode = require("../../utils/codeGen");
 const generateToken = require("../../utils/genToken");
@@ -49,14 +50,19 @@ const createUserAccount = async ({
 
     if (!googleId) {
       const code = generateConfirmationCode();
-      await Promise.all([
+      const promises = [
         Otp.create({
           email: newUser.email,
           otp: code,
           expiresAt: new Date(Date.now() + 2 * 60 * 1000)
-        }),
-        sendVerificationEmail({ email: newUser.email, code })
-      ]);
+        })
+      ];
+
+      if (config.env !== "test") {
+        promises.push(sendVerificationEmail({ email: newUser.email, code }));
+      }
+
+      await Promise.all(promises);
     }
 
     const token = await generateToken({
@@ -67,7 +73,7 @@ const createUserAccount = async ({
     });
 
     return {
-      code: 200,
+      code: 201,
       message: googleId
         ? "Account Created Successfully"
         : "OTP Sent to your email",

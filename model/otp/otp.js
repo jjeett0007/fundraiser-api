@@ -32,7 +32,11 @@ const deleteExpiredOtps = async () => {
   }
 };
 
-// Schedule the task to run every minute
-cron.schedule("* * * * *", deleteExpiredOtps);
+
+if (process.env.NODE_ENV !== "test") {
+  // Schedule the task to run every minute
+  cron.schedule("* * * * *", deleteExpiredOtps);
+  console.log("✅ OTP cleanup scheduled");
+}
 
 module.exports = Otp;
