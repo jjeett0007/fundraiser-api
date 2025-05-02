@@ -5,6 +5,7 @@ const userRouter = require("./user");
 const googleOauth = require("./googleOauth");
 const upload = require("./upload");
 const password = require("./password");
+const waitList = require("./waitlist");
 
 const router = express.Router();
 
@@ -32,6 +33,10 @@ const defaultRoutes = [
   {
     path: "/upload",
     route: upload
+  },
+  {
+    path: "/waitlist",
+    route: waitList
   }
 ];
 

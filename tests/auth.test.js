@@ -270,3 +270,16 @@ describe("Password Reset Flow", () => {
     expect(res.body.message).toBe("Password reset successfully");
   });
 });
+
+describe("Waitlist Flow", () => {
+  it("should add the user to the waitlist", async () => {
+    const res = await request(app)
+      .post("/v1/waitlist/join")
+      .send({ email: testUser.email });
+
+    console.log(res.body);
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.message).toBe("Added to waitlist successfully");
+  });
+});
