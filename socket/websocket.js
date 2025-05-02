@@ -1,51 +1,32 @@
-const express = require("express");
-const http = require("http");
 const config = require("../config/index");
-const WebSocket = require("ws");
 const jwt = require("jsonwebtoken");
 
-const app = express();
-
-const origins = config.socket.origin;
 const jwtSecret = config.jwt.secret;
 
-const server = http.createServer(app);
-
-const wss = new WebSocket.Server({ server });
-
-function verifyOrigin(origin) {
-  return origin === origins;
-}
-
 const userSockets = {};
-console.log(userSockets);
 
 function isUserConnected(userId) {
   const sockets = userSockets[userId];
-  console.log(
-    "user is connected?",
-    sockets && sockets.some((socket) => socket.readyState === WebSocket.OPEN)
-  );
-  return (
-    sockets && sockets.some((socket) => socket.readyState === WebSocket.OPEN)
-  );
+  const connected =
+    sockets && sockets.some((socket) => socket.readyState === 1);
+  console.log("User is connected?", connected);
+  return connected;
 }
 
 function sendMessageToUser(data) {
-  const user = data.userId;
-
+  const userId = data.userId;
   const message = {
     type: "message",
     from: data.from,
     conversationId: data.conversationId,
     reload: true,
-    message: data.message,
+    message: data.message
   };
 
-  const sockets = userSockets[user];
+  const sockets = userSockets[userId];
   if (sockets && sockets.length > 0) {
     sockets.forEach((socket) => {
-      if (socket.readyState === WebSocket.OPEN) {
+      if (socket.readyState === 1) {
         socket.send(JSON.stringify(message));
       }
     });
@@ -62,17 +43,12 @@ function addUserSocket(userId, ws) {
   userSockets[userId].push(ws);
 }
 
-wss.on("connection", (ws, req) => {
-  const origin = req.headers.origin;
+function setupSocket(wss) {
+  console.log("WebSocket server started");
 
-  console.log("Connection attempt from origin:", origin);
-
-  if (origin && !verifyOrigin(origin)) {
-    ws.close(1000, "origin not allowed");
-    console.log(`connetion from ${origin} denied`);
-    return;
-  } else if (origin && verifyOrigin(origin)) {
-    console.log("new client connected");
+  wss.on("connection", (ws, req) => {
+    const origin = req.headers.origin;
+    console.log("Connection attempt from origin:", origin);
 
     ws.on("message", (message) => {
       const data = JSON.parse(message);
@@ -80,30 +56,33 @@ wss.on("connection", (ws, req) => {
       if (data.type === "request-id") {
         const token = data.token;
 
-        let usersId = "";
+        jwt.verify(token, jwtSecret, (err, decodedToken) => {
+          if (err) {
+            console.log("Invalid token, closing connection");
+            return ws.close();
+          }
 
-        jwt.verify(token, jwtSecret, async (err, decoded) => {
-          const decodedToken = jwt.verify(token, jwtSecret);
           const userId = decodedToken.id;
-          usersId = userId;
+          addUserSocket(userId, ws);
+          ws.send(JSON.stringify({ type: "connection-id", id: userId }));
         });
-
-        addUserSocket(usersId, ws);
-
-        ws.send(JSON.stringify({ type: "connection-id", id: usersId }));
       }
     });
 
     ws.on("close", () => {
-      const userId = Object.keys(userSockets).find(
-        (key) => userSockets[key] === ws
-      );
-      if (userId) {
-        delete userSockets[userId];
-        console.log(`User ${userId} disconnected`);
+      for (const userId in userSockets) {
+        userSockets[userId] = userSockets[userId].filter((s) => s !== ws);
+        if (userSockets[userId].length === 0) {
+          delete userSockets[userId];
+          console.log(`User ${userId} disconnected`);
+        }
       }
     });
-  }
-});
+  });
+}
 
-module.exports = { app, server, isUserConnected, sendMessageToUser };
+module.exports = {
+  setupSocket,
+  isUserConnected,
+  sendMessageToUser
+};

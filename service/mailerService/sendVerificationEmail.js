@@ -23,4 +23,5 @@ const sendVerificationEmail = async (data) => {
         `;
   await sendEmail(to, subject, html);
 };
+
 module.exports = sendVerificationEmail;

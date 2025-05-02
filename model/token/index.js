@@ -6,17 +6,17 @@ const tokenSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: true
     },
     token: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"] },
     type: {
       type: String,
       enum: ["access", "refresh", "reset", "2fa"],
-      required: true,
+      required: true
     },
     status: { type: String, enum: ["active", "revoked"] },
-    expiresAt: { type: Date, required: true },
+    expiresAt: { type: Date, required: true }
   },
   { timestamps: true }
 );
@@ -35,8 +35,9 @@ const deleteExpiredTokens = async () => {
   }
 };
 
-cron.schedule("*/10 * * * * *", deleteExpiredTokens);
-
-console.log("✅ Token cleanup job scheduled to run every 10 seconds.");
+if (process.env.NODE_ENV !== "test") {
+  cron.schedule("*/10 * * * * *", deleteExpiredTokens);
+  console.log("✅ Token cleanup job scheduled to run every 10 seconds.");
+}
 
 module.exports = Token;

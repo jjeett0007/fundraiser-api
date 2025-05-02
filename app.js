@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const app = express();
 const session = require("express-session");
 const passport = require("passport");
 const morgan = require("morgan");
@@ -17,15 +18,11 @@ global.handleResponse = require("./utils/handleResponse");
 global.httpStatus = require("http-status");
 
 const config = require("./config/index");
-const http = require("http");
 const routes = require("./route/v1/index");
 
-const PORT = config.port;
-const { app, server } = require("./socket/websocket");
 require("./lib/firebase");
 require("./lib/smtp");
 const { connectToDatabase } = require("./lib/database");
-
 
 app.use(cors());
 
@@ -43,7 +40,19 @@ app.use(
   })
 );
 
-app.use(morgan("combined"));
+
+if (config.env !== "prod" && config.env !== "test") {
+  app.use(
+    morgan("combined", {
+      stream: {
+        write: (message) => {
+          // Log to a file or external service
+          console.log(message.trim());
+        }
+      }
+    })
+  );
+}
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -65,6 +74,4 @@ app.get("/", (req, res) => {
 
 app.use("/v1", routes);
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app;

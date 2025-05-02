@@ -9,7 +9,7 @@ const { otpCodeValidation } = require("../../validation/authValid");
 const optResend = require("../../controller/User/resnedOtp");
 const verifyOtp = require("../../controller/User/verifyCode");
 
-router.post("/resend", isUserAuthenticated, optResend);
+router.get("/resend", isUserAuthenticated, optResend);
 router.post(
   "/verify",
   isUserAuthenticated,

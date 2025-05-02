@@ -7,7 +7,6 @@ const envVarsSchema = Joi.object()
   .keys({
     PORT: Joi.number(),
     PING: Joi.string().optional(),
-    NODE_ENV: Joi.string().valid("prod", "dev", "test").required(),
 
     MONGODB_USERNAME: Joi.string(),
     MONGODB_PASSWORD: Joi.string(),
