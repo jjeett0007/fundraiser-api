@@ -3,11 +3,13 @@ const User = require("./user/user");
 const Otp = require("./otp/otp");
 const Token = require("./token/index");
 const FundRaiseDonor = require("./fundraise/donor");
+const WaitList = require("./waitlist/index");
 
 module.exports = {
   FundRaise,
   FundRaiseDonor,
   User,
   Otp,
-  Token
+  Token,
+  WaitList
 };
