@@ -32,6 +32,18 @@ const fundRaiseDonor = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  walletAddress: {
+    type: String,
+    required: true
+  },
+  walletInfo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Wallet"
+  },
+  signature: {
+    type: String,
+    default: null
+  }
 });
 
 const FundRaiseDonor = mongoose.model("FundRaiseDonor", fundRaiseDonor);

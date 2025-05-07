@@ -1,5 +1,6 @@
 const config = require("../config/index");
 const jwt = require("jsonwebtoken");
+const { monitorWallet } = require("./helius-socket-listner");
 
 const jwtSecret = config.jwt.secret;
 
@@ -66,6 +67,12 @@ function setupSocket(wss) {
           addUserSocket(userId, ws);
           ws.send(JSON.stringify({ type: "connection-id", id: userId }));
         });
+      }
+
+      if (data.type === "subscribe-wallet") {
+        const { walletAddress, walletId } = data;
+        monitorWallet(walletAddress, walletId, ws);
+        ws.send(JSON.stringify({ status: "subscribed", walletAddress }));
       }
     });
 
