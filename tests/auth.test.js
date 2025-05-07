@@ -25,7 +25,8 @@ const testUser = {
   }
 };
 
-let accessToken;
+let accessToken = null;
+
 
 beforeAll(async () => {
   await connectToDatabase();
@@ -77,7 +78,7 @@ afterAll(async () => {
       console.error("Error disconnecting:", e);
     }
   }
-}, 10000); // 10 second timeout
+}, 10000);
 
 describe("Auth Flow", () => {
   it("should sign up a user", async () => {
@@ -276,8 +277,6 @@ describe("Waitlist Flow", () => {
     const res = await request(app)
       .post("/v1/waitlist/join")
       .send({ email: testUser.email });
-
-    console.log(res.body);
 
     expect(res.statusCode).toBe(201);
     expect(res.body.message).toBe("Added to waitlist successfully");

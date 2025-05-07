@@ -1,8 +1,9 @@
 const { FundRaise } = require("../../model/index");
+const { generateAddress } = require("../generate/generate");
 
-const startFundRaise = async ({ id, fundRaiseId }) => {
+const startFundRaise = async ({ id, fundraiseId }) => {
   try {
-    const fundRaise = await FundRaise.findOne({ _id: fundRaiseId });
+    const fundRaise = await FundRaise.findById(fundraiseId);
 
     const errorChecks = [
       {
@@ -38,9 +39,13 @@ const startFundRaise = async ({ id, fundRaiseId }) => {
       return { code: error.code, message: error.message };
     }
 
+    const getContractAddress = await generateAddress("contract");
+
     await FundRaise.findByIdAndUpdate(
-      fundRaiseId,
+      fundraiseId,
       {
+        contract: getContractAddress.id,
+        isInitialized: true,
         isFundRaiseStarted: true,
         isFundRaiseEnded: false,
         isFundRaiseActive: true,
@@ -51,6 +56,7 @@ const startFundRaise = async ({ id, fundRaiseId }) => {
 
     return { code: 200, message: "Fundraise started." };
   } catch (error) {
+    console.error("Error in startFundRaise:", error);
     return { code: 500, message: "Server error.", error };
   }
 };

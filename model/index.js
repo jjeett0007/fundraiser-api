@@ -4,6 +4,7 @@ const Otp = require("./otp/otp");
 const Token = require("./token/index");
 const FundRaiseDonor = require("./fundraise/donor");
 const WaitList = require("./waitlist/index");
+const WalletAddress = require("./Address/index");
 
 module.exports = {
   FundRaise,
@@ -11,5 +12,6 @@ module.exports = {
   User,
   Otp,
   Token,
-  WaitList
+  WaitList,
+  WalletAddress
 };

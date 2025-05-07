@@ -6,6 +6,7 @@ const googleOauth = require("./googleOauth");
 const upload = require("./upload");
 const password = require("./password");
 const waitList = require("./waitlist");
+const fundRaise = require("./fundraise");
 
 const router = express.Router();
 
@@ -21,6 +22,10 @@ const defaultRoutes = [
   {
     path: "/password",
     route: password
+  },
+  {
+    path: "/fundraise",
+    route: fundRaise
   },
   {
     path: "/user",

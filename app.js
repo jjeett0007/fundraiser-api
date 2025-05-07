@@ -22,6 +22,7 @@ const routes = require("./route/v1/index");
 
 require("./lib/firebase");
 require("./lib/smtp");
+require("./lib/solana-block-service");
 const { connectToDatabase } = require("./lib/database");
 
 app.use(cors());

@@ -1,4 +1,5 @@
 const { FundRaise, FundRaiseDonor } = require("../../model/index");
+const { generateAddress } = require("../generate/generate");
 
 const fundFundRaise = async ({
   name,
@@ -6,10 +7,11 @@ const fundFundRaise = async ({
   amount,
   note,
   anonymous = false,
-  fundRaiseId
+  id
 }) => {
+  console.log("fundFundRaise", id);
   try {
-    const fundRaise = await FundRaise.findById(fundRaiseId);
+    const fundRaise = await FundRaise.findById(id);
 
     const errorChecks = [
       {
@@ -18,18 +20,23 @@ const fundFundRaise = async ({
         message: "Fundraise not found."
       },
       {
+        condition: !fundRaise.isFundRaiseStarted,
+        code: 400,
+        message: "Fundraise not started."
+      },
+      {
         condition: fundRaise.isFundRaisedStopped,
         code: 400,
-        message: "Fundraise is stopped."
+        message: "Fundraise stopped."
       },
       {
         condition: fundRaise.isFundRaiseEnded,
         code: 400,
-        message: "Fundraise is ended."
+        message: "Fundraise ended."
       },
       {
         condition: fundRaise.currentAmount >= fundRaise.goalAmount,
-        code: 400,
+        code: 403,
         message: "Fundraise goal already reached."
       }
     ];
@@ -37,7 +44,7 @@ const fundFundRaise = async ({
     for (const check of errorChecks) {
       if (check.condition) {
         if (
-          check.code === 400 &&
+          check.code === 403 &&
           check.message === "Fundraise goal already reached."
         ) {
           await FundRaise.findByIdAndUpdate(
@@ -55,16 +62,26 @@ const fundFundRaise = async ({
       }
     }
 
-    await new FundRaiseDonor({
+    const paymentReference = await generateAddress("payment");
+
+    const getFundData = await FundRaiseDonor.create({
       name,
       email,
       amount,
       note,
       anonymous,
-      fundRaiseId
-    }).save();
+      fundRaiseId: fundRaise._id.toString(),
+      walletAddress: paymentReference.address,
+      walletInfo: paymentReference.id
+    });
 
-    return { code: 200, message: "Fundraise funded successfully." };
+    return {
+      code: 200,
+      message: "Payment data generated",
+      data: {
+        donateId: getFundData._id.toString()
+      }
+    };
   } catch (error) {
     return { code: 500, message: "Server error.", error: error.message };
   }

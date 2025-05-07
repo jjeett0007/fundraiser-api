@@ -7,6 +7,7 @@ const createFundRaise = async ({
   category,
   walletAddress,
   imageUrl,
+  videoUrl,
   id
 }) => {
   try {
@@ -20,12 +21,15 @@ const createFundRaise = async ({
     }
 
     const fundRaise = await FundRaise.create({
-      title,
-      description,
-      goalAmount,
-      category,
-      walletAddress,
-      imageUrl,
+      fundMetaData: {
+        title,
+        description,
+        goalAmount,
+        category,
+        walletAddress,
+        imageUrl,
+        videoUrl
+      },
       createdBy: id
     });
 
