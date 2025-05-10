@@ -6,11 +6,21 @@ const jwtSecret = config.jwt.secret;
 
 const userSockets = {};
 
+const walletMonitor = {};
+
 function isUserConnected(userId) {
   const sockets = userSockets[userId];
   const connected =
     sockets && sockets.some((socket) => socket.readyState === 1);
   console.log("User is connected?", connected);
+  return connected;
+}
+
+function isAddressMonitored(walletAddress) {
+  const monitored = walletMonitor[walletAddress];
+  const connected =
+    monitored && monitored.some((socket) => socket.readyState === 1);
+  console.log("Wallet address is monitored?", monitored);
   return connected;
 }
 
@@ -37,11 +47,32 @@ function sendMessageToUser(data) {
   }
 }
 
+function notifyBrowserUser({ walletAddress, message }) {
+  const device = walletMonitor[walletAddress];
+
+  if (device && device.length > 0) {
+    device.forEach((ws) => {
+      if (ws.readyState === 1) {
+        ws.send(JSON.stringify({ type: "message", message }));
+      }
+    });
+  }
+}
+
 function addUserSocket(userId, ws) {
   if (!userSockets[userId]) {
     userSockets[userId] = [];
   }
   userSockets[userId].push(ws);
+}
+
+function addWallet(walletAddress, ws) {
+  if (!walletMonitor[walletAddress]) {
+    walletMonitor[walletAddress] = {
+      wsSet: new Set()
+    };
+  }
+  walletMonitor[walletAddress].wsSet.add(ws);
 }
 
 function setupSocket(wss) {
@@ -71,7 +102,8 @@ function setupSocket(wss) {
 
       if (data.type === "subscribe-wallet") {
         const { walletAddress, walletId } = data;
-        monitorWallet(walletAddress, walletId, ws);
+        addWallet(walletAddress, ws);
+        // monitorWallet(walletAddress, walletId, ws);
         ws.send(JSON.stringify({ status: "subscribed", walletAddress }));
       }
     });
@@ -91,5 +123,7 @@ function setupSocket(wss) {
 module.exports = {
   setupSocket,
   isUserConnected,
-  sendMessageToUser
+  isAddressMonitored,
+  sendMessageToUser,
+  notifyBrowserUser
 };

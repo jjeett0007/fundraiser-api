@@ -45,6 +45,7 @@ const startFundRaise = async ({ id, fundraiseId }) => {
       fundraiseId,
       {
         contract: getContractAddress.id,
+        contractAddress: getContractAddress.address,
         isInitialized: true,
         isFundRaiseStarted: true,
         isFundRaiseEnded: false,

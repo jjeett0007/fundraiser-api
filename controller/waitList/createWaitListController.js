@@ -1,9 +1,8 @@
 const createWaitList = require("../../service/Waitlist/createWaitList");
 
 const createWaitListController = catchAsync(async (req, res) => {
+  const { email } = req.body;
   try {
-    const { email } = req.body;
-
     const { code, message, data } = await createWaitList({
       email
     });

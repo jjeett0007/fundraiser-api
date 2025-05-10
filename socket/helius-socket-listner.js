@@ -1,4 +1,3 @@
-const axios = require("axios");
 const { Helius } = require("helius-sdk"); // Assuming you're using Helius SDK
 
 const HELIUS_API_KEY = "0b2449ac-ce81-445c-b77f-3286179464f5";
