@@ -23,10 +23,10 @@ const heliusHookHandler = async (data) => {
     description,
     fee,
     feePayer,
-    nativeTransfer,
+    nativeTransfers,
     source,
     timestamp,
-    tokenTransfer,
+    tokenTransfers,
     type,
     signature
   } = data;
@@ -34,14 +34,14 @@ const heliusHookHandler = async (data) => {
   try {
     if (type === "TRANSFER") {
       if (source === "SOLANA_PROGRAM_LIBRARY") {
-        if (tokenTransfer && tokenTransfer.length > 0) {
+        if (tokenTransfers && tokenTransfers.length > 0) {
           const {
             mint,
             fromUserAccount,
             toUserAccount,
             tokenAmount,
             tokenStandard
-          } = tokenTransfer[0];
+          } = tokenTransfers[0];
 
           if (tokenStandard === "Fungible") {
             const mintPublicKey = getPublicKey(mint);
@@ -81,8 +81,9 @@ const heliusHookHandler = async (data) => {
                 );
 
                 // remove from webhook
-                await removeAddressFromWebhook(toUserAccount);
-
+                process.nextTick(() => {
+                  removeAddressFromWebhook(toUserAccount);
+                });
                 // notify user
 
                 // transfer fund from toUserAccount to contract address and update fundraise contract

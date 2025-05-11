@@ -5,22 +5,23 @@ const heliusWebhook = catchAsync(async (req, res) => {
     description,
     fee,
     feePayer,
-    nativeTransfer,
+    nativeTransfers,
     source,
     timestamp,
-    tokenTransfer,
+    tokenTransfers,
     type,
     signature
   } = req.body[0];
+
   try {
     const { code, message, data } = await heliusHookHandler({
       description,
       fee,
       feePayer,
-      nativeTransfer,
+      nativeTransfers,
       source,
       timestamp,
-      tokenTransfer,
+      tokenTransfers,
       type,
       signature
     });
