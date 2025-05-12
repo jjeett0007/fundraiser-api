@@ -71,6 +71,11 @@ const fundRaiseDb = new mongoose.Schema(
       ref: "Wallet"
     },
 
+    contractAddress: {
+      type: String,
+      default: null
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

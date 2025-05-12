@@ -23,6 +23,7 @@ const getAllFundRaises = async ({ page = 1, category }) => {
       includeUser: false,
       exclude: [
         "createdBy",
+        "contractAddress",
         "contract",
         "isFundRaiseStarted",
         "isFundRaiseEnded",

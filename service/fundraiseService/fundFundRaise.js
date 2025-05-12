@@ -1,5 +1,6 @@
 const { FundRaise, FundRaiseDonor } = require("../../model/index");
 const { generateAddress } = require("../generate/generate");
+const { addAddressToWebhook } = require("../../lib/helius");
 
 const fundFundRaise = async ({
   name,
@@ -9,7 +10,6 @@ const fundFundRaise = async ({
   anonymous = false,
   id
 }) => {
-  console.log("fundFundRaise", id);
   try {
     const fundRaise = await FundRaise.findById(id);
 
@@ -48,7 +48,7 @@ const fundFundRaise = async ({
           check.message === "Fundraise goal already reached."
         ) {
           await FundRaise.findByIdAndUpdate(
-            fundRaiseId,
+            fundRaise._id.toString(),
             {
               isFundRaiseEnded: true,
               isFundRaisedStopped: true,
@@ -74,6 +74,8 @@ const fundFundRaise = async ({
       walletAddress: paymentReference.address,
       walletInfo: paymentReference.id
     });
+
+    await addAddressToWebhook(paymentReference.address);
 
     return {
       code: 200,
