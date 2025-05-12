@@ -4,6 +4,7 @@ const getAllFundRaiseController = require("./getAllFundRaiseController");
 const getFundRaiseByIdController = require("./getFundRaiseData");
 const getPaymentInfoController = require("./getPaymentFundInfoController");
 const startFundRaiseController = require("./startFundRaise");
+const getMyFundRaise = require("./getMyFundRaiseController")
 
 module.exports = {
   createFundRaiseController,
@@ -11,5 +12,6 @@ module.exports = {
   getAllFundRaiseController,
   getFundRaiseByIdController,
   getPaymentInfoController,
-  startFundRaiseController
+  startFundRaiseController,
+  getMyFundRaise
 };

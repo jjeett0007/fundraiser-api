@@ -1,6 +1,6 @@
-const createFundRaise = require("../../service/fundraiseService/createFundRaise");
+const getAllFundRaises = require("../../service/fundraiseService/getFundRaises");
 
-const createFundRaiseController = catchAsync(async (req, res) => {
+const getMyFundRaise = catchAsync(async (req, res) => {
     const id = await getId(req, res);
     const { page, category } = req.query;
 
@@ -22,4 +22,4 @@ const createFundRaiseController = catchAsync(async (req, res) => {
     }
 });
 
-module.exports = createFundRaiseController;
+module.exports = getMyFundRaise;

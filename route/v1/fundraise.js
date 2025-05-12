@@ -20,7 +20,8 @@ const {
   getAllFundRaiseController,
   getFundRaiseByIdController,
   getPaymentInfoController,
-  startFundRaiseController
+  startFundRaiseController,
+  getMyFundRaise
 } = require("../../controller/fundRaiseController/index");
 
 router.post(
@@ -29,6 +30,14 @@ router.post(
   isAccountVerified,
   validate(fundraiserValidation),
   createFundRaiseController
+);
+
+router.get(
+  "/get",
+  isUserAuthenticated,
+  isAccountVerified,
+  validate(fundraiserValidation),
+  getMyFundRaise
 );
 
 router.post(
