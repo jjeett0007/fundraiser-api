@@ -1,14 +1,20 @@
 const { FundRaise } = require("../../model/index");
 const getPaginatedData = require("../../utils/paginationQueries");
 
-const getAllFundRaises = async ({ page = 1, category }) => {
+const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
   const filter = {
     isInitialized: true,
     isFundRaiseStarted: true,
     isFundRaiseEnded: false,
     isFundRaiseActive: true,
-    isFundRaisedStopped: false
+    isFundRaisedStopped: false,
+    isFundRaiseDeactivated: false,
+    "verify.isFundRaiseVerified": false,
   };
+
+  if (createdBy) {
+    filter.createdBy = createdBy
+  }
 
   if (category) {
     filter["fundMetaData.category"] = category;
@@ -34,20 +40,20 @@ const getAllFundRaises = async ({ page = 1, category }) => {
         "isFundRaiseFundsComplete",
         "isFundRaiseFundedCompletely",
         "isFundRaisedEndDate",
-        "isTotalFundCounts",
-        "reportCount",
         "isDeleted",
-        "isFundRaiseVerified",
-        "isFundRaiseVerifiedDate",
-        "isFundRaiseVerifiedBy",
-        "isFundRaiseVerifiedComment",
-        "isFundRaiseVerifiedStatus",
+        "verify.verificationId",
+        "verify.isFundRaiseVerifiedDate",
+        "verify.isFundRaiseVerifiedBy",
+        "verify.isFundRaiseVerifiedComment",
+        "verify.isFundRaiseVerifiedStatus",
         "isFundRaiseDeactivated",
         "createdAt",
         "updatedAt",
         "__v",
         "fundMetaData.walletAddress",
-        "fundMetaData.videoUrl"
+        "fundMetaData.videoUrl",
+        "staticsts.averageDonation",
+        "staticsts.largestAmount",
       ]
     });
 

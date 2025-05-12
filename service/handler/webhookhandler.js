@@ -62,33 +62,8 @@ const heliusHookHandler = async (data) => {
                 donationInfo.currentAmount + tokenAmount >=
                 donationInfo.amount
               ) {
-                // update fundraiseDonor
-                await FundRaiseDonor.findByIdAndUpdate(
-                  donationInfo._id.toString(),
-                  {
-                    $set: {
-                      currentAmount: donationInfo.currentAmount + tokenAmount,
-                      isFundPaid: true,
-                      $push: {
-                        from: fromUserAccount,
-                        signature: signature,
-                        tokenTypes: "USDC"
-                      },
-                      blockTime: timestamp
-                    }
-                  },
-                  { new: true }
-                );
-
-                // remove from webhook
-                process.nextTick(() => {
-                  removeAddressFromWebhook(toUserAccount);
-                });
-                // notify user
-
                 // transfer fund from toUserAccount to contract address and update fundraise contract
                 // get contract address
-
                 const { privateKey, walletAddress } = donationInfo.walletInfo;
                 const { _id, contractAddress } = donationInfo.fundRaiseId;
 
@@ -99,6 +74,66 @@ const heliusHookHandler = async (data) => {
                 });
 
                 console.log(sendTokenToContract);
+
+
+
+
+                // notify user
+
+
+                await Promise.all([
+                  FundRaiseDonor.findByIdAndUpdate(
+                    donationInfo._id.toString(),
+                    {
+                      $set: {
+                        currentAmount: donationInfo.currentAmount + tokenAmount,
+                        isFundPaid: true,
+                        blockTime: timestamp
+                      },
+                      $push: {
+                        from: fromUserAccount,
+                        signature: signature,
+                        tokenTypes: "USDC"
+                      }
+                    },
+                    { new: true }
+                  ),
+                  WalletAddress.findOneAndUpdate(
+                    { walletAddress: walletAddress },
+                    {
+                      $inc: {
+                        "balance.usdcBalance": tokenAmount
+                      },
+                      $push: {
+                        signature: signature,
+                        description: description
+                      },
+                      $set: {
+                        feePayer: feePayer,
+                        fee: fee
+                      }
+                    }
+                  ),
+                  FundRaise.findByIdAndUpdate(
+                    _id,
+                    {
+                      $inc: {
+                        "statics.totalRaised": tokenAmount,
+                        "statics.totalDonor": 1
+                      },
+                      $max: {
+                        "statics.largestAmount": tokenAmount
+                      }
+                    },
+                    { new: true }
+                  )
+                ]);
+
+                // remove from webhook
+                setImmediate.nextTick(() => {
+                  removeAddressFromWebhook(toUserAccount);
+                });
+
 
                 return {
                   code: 200,

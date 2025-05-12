@@ -3,7 +3,7 @@ const { FundRaise } = require("../../model/index");
 const getFundRaiseDataById = async ({ id }) => {
   try {
     const fundRaise = await FundRaise.findById(id).select(
-      "fundMetaData isFundRaiseStarted isInitialized isFundRaisedStopped isFundRaiseFundsComplete isFundRaisedStartedDate"
+      "fundMetaData isFundRaiseStarted isInitialized isFundRaisedStopped isFundRaiseFundsComplete isFundRaisedStartedDate staticsts verify"
     );
 
     if (!fundRaise) {

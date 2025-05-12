@@ -59,6 +59,57 @@ const fundMetaDataSchema = new mongoose.Schema(
   { _id: false }
 );
 
+
+const staticsts = new mongoose.Schema({
+  totalRaised: {
+    type: Number,
+    default: 0
+  },
+  totalDonor: {
+    type: Number,
+    default: 0
+  },
+  averageDonation: {
+    type: Number,
+    default: 0
+  },
+  largestAmount: {
+    type: Number,
+    default: 0
+  }
+}, { _id: false })
+
+const verificationSyntax = new mongoose.Schema({
+  verificationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Fundraise-verify",
+    default: null
+  },
+  isFundRaiseVerified: {
+    type: Boolean,
+    default: false
+  },
+  isFundRaiseVerifiedDate: {
+    type: Date,
+    default: null
+  },
+  isFundRaiseVerifiedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Admin",
+    default: null
+  },
+  isFundRaiseVerifiedComment: {
+    type: String,
+    default: null
+  },
+  isFundRaiseVerifiedStatus: {
+    type: String,
+    enum: ["approved", "rejected"],
+    default: null
+  },
+}, { _id: false })
+
+
 const fundRaiseDb = new mongoose.Schema(
   {
     fundMetaData: {
@@ -80,6 +131,16 @@ const fundRaiseDb = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
+    },
+
+    verify: {
+      type: verificationSyntax,
+      default: {}
+    },
+    
+    statics: {
+      type: staticsts,
+      default: {}
     },
 
     isInitialized: {
@@ -142,40 +203,7 @@ const fundRaiseDb = new mongoose.Schema(
       default: null
     },
 
-    isTotalFundCounts: {
-      type: Number,
-      default: 0
-    },
-    isTotalDonor: {
-      type: Number,
-      default: 0
-    },
-    reportCount: {
-      type: Number,
-      default: 0
-    },
-    isFundRaiseVerified: {
-      type: Boolean,
-      default: false
-    },
-    isFundRaiseVerifiedDate: {
-      type: Date,
-      default: null
-    },
-    isFundRaiseVerifiedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Admin",
-      default: null
-    },
-    isFundRaiseVerifiedComment: {
-      type: String,
-      default: null
-    },
-    isFundRaiseVerifiedStatus: {
-      type: String,
-      enum: ["approved", "rejected"],
-      default: null
-    },
+
     isFundRaiseDeactivated: {
       type: Boolean,
       default: false

@@ -1,4 +1,4 @@
-const { FundRaise } = require("../../model/index");
+const { FundRaise, User } = require("../../model/index");
 
 const createFundRaise = async ({
   title,
