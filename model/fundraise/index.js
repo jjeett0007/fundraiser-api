@@ -76,6 +76,10 @@ const staticsts = new mongoose.Schema({
   largestAmount: {
     type: Number,
     default: 0
+  },
+  lastPaymentTime: {
+    type: Date,
+    default: null
   }
 }, { _id: false })
 
@@ -137,7 +141,7 @@ const fundRaiseDb = new mongoose.Schema(
       type: verificationSyntax,
       default: {}
     },
-    
+
     statics: {
       type: staticsts,
       default: {}

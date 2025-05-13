@@ -32,6 +32,9 @@ const uploadFile = catchAsync(async (req, res) => {
 
   const fileExtension = file.split(";")[0].split("/")[1];
 
+  const extension = getResourceType(fileExtension)
+  console.log(extension)
+
   const uploadOptions = {
     folder: "uploads",
     use_filename: true,
@@ -50,7 +53,10 @@ const uploadFile = catchAsync(async (req, res) => {
       res,
       (code = 200),
       (message = "File uploaded successfully"),
-      (data = cloudinaryUpload.secure_url)
+      (data = {
+        link: cloudinaryUpload.secure_url,
+        type: getFormat(fileExtension)
+      })
     );
   } catch (error) {
     console.error(error);

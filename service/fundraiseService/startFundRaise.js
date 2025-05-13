@@ -22,6 +22,16 @@ const startFundRaise = async ({ id, fundraiseId }) => {
         message: "Fundraise already stopped."
       },
       {
+        condition: !fundRaise.verify?.verificationId || fundRaise.verify?.verificationId === null,
+        code: 403,
+        message: "Verify your Identity for this fundraise."
+      },
+      {
+        condition: fundRaise.verify.isFundRaiseVerified === false,
+        code: 403,
+        message: "Pending verification"
+      },
+      {
         condition: fundRaise.isFundRaiseEnded,
         code: 400,
         message: "Fundraise already ended."

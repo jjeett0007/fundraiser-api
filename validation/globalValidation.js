@@ -61,8 +61,9 @@ const fundraiserValidation = {
       "string.max": "Description must be at most 2000 characters long",
       "any.required": "Description is required"
     }),
-    goalAmount: Joi.number().required().positive().messages({
+    goalAmount: Joi.number().required().positive().min(1).messages({
       "number.positive": "Goal amount must be a positive number",
+      "number.min": "Goal amount must be at least 1",
       "any.required": "Goal amount is required"
     }),
     category: Joi.string()

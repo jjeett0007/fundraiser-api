@@ -15,6 +15,11 @@ const deleteFundRaise = async ({ id, fundRaiseId }) => {
         code: 403,
         message: "You are not authorized to delete this fundraise."
       },
+       {
+        condition: fundRaise.verify.verificationId,
+        code: 403,
+        message: "Fundraise is under review, can't be deleted."
+      },
       {
         condition: fundRaise.isInitialized,
         code: 400,

@@ -36,7 +36,6 @@ router.get(
   "/get",
   isUserAuthenticated,
   isAccountVerified,
-  validate(fundraiserValidation),
   getMyFundRaise
 );
 
