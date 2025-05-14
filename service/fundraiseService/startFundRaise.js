@@ -5,6 +5,13 @@ const startFundRaise = async ({ id, fundraiseId }) => {
   try {
     const fundRaise = await FundRaise.findById(fundraiseId);
 
+    if (!fundRaise) {
+      return {
+        code: 404,
+        message: "Not Found",
+      };
+    }
+
     const errorChecks = [
       {
         condition: !fundRaise,
@@ -51,6 +58,8 @@ const startFundRaise = async ({ id, fundraiseId }) => {
     ];
 
     const error = errorChecks.find((check) => check.condition);
+
+    console.log(error);
 
     if (error) {
       return { code: error.code, message: error.message };

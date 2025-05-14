@@ -2,7 +2,7 @@ const { FundRaiseDonor } = require("../../model/index");
 const getPaginatedData = require("../../utils/paginationQueries");
 
 const getAllDonation = async ({ page = 1, fundraiseId }) => {
-  console.log(fundraiseId);
+  
   const filter = {
     isFundPaid: true,
   };
@@ -29,7 +29,7 @@ const getAllDonation = async ({ page = 1, fundraiseId }) => {
         "createdAt",
         "__v",
         "tokenTypes",
-        "walletAddres",
+        "walletAddress",
       ],
     });
 

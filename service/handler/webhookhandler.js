@@ -130,7 +130,7 @@ const heliusHookHandler = async (data) => {
                 ]);
 
                 // remove from webhook
-                setImmediate.nextTick(() => {
+                process.nextTick(() => {
                   removeAddressFromWebhook(toUserAccount);
                 });
 
