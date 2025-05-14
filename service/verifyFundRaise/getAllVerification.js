@@ -11,8 +11,12 @@ const getAllVerificationData = async ({ page = 1 }) => {
       page,
       limit: 10,
       includeUser: true,
-      populate: [], 
-      exclude: [],
+      populate: [],
+      exclude: [
+        "proofOfFundRaiseVerify",
+        "isFundRaiseVerifiedDate",
+        "isFundRaiseVerifiedBy",
+      ],
     });
 
     return fundRaiseVerifications;
@@ -20,3 +24,5 @@ const getAllVerificationData = async ({ page = 1 }) => {
     return { code: 500, message: "Server error.", error };
   }
 };
+
+module.exports = getAllVerificationData;
