@@ -9,8 +9,11 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
     isFundRaiseActive: true,
     isFundRaisedStopped: false,
     isFundRaiseDeactivated: false,
-    "verify.isFundRaiseVerified": false,
   };
+
+  if (!createdBy) {
+    filter["verify.isFundRaiseVerified"] = false;
+  }
 
   if (createdBy) {
     filter.createdBy = createdBy
@@ -39,6 +42,7 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "isFundRaiseDeleted",
         "isFundRaiseFundsComplete",
         "isFundRaiseFundedCompletely",
+        "isFundRaisedStartedDate",
         "isFundRaisedEndDate",
         "isDeleted",
         "verify.verificationId",
@@ -54,6 +58,14 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "fundMetaData.videoUrl",
         "staticsts.averageDonation",
         "staticsts.largestAmount",
+        "isTotalFundCounts",
+        "isFundRaiseVerified",
+        "isFundRaiseVerifiedBy",
+        "isFundRaiseVerifiedComment",
+        "isFundRaiseVerifiedStatus",
+        "isFundRaiseVerifiedDate",
+        "isInitialized",
+        "isTotalDonor"
       ]
     });
 

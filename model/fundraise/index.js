@@ -76,6 +76,10 @@ const staticsts = new mongoose.Schema({
   largestAmount: {
     type: Number,
     default: 0
+  },
+  lastPaymentTime: {
+    type: Date,
+    default: null
   }
 }, { _id: false })
 
@@ -84,6 +88,10 @@ const verificationSyntax = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Fundraise-verify",
     default: null
+  },
+  isVerificationInitalized: {
+    type: Boolean,
+    default: false
   },
   isFundRaiseVerified: {
     type: Boolean,
@@ -107,6 +115,10 @@ const verificationSyntax = new mongoose.Schema({
     enum: ["approved", "rejected"],
     default: null
   },
+  declinedComment: {
+    type: String,
+    default: null
+  }
 }, { _id: false })
 
 
@@ -137,7 +149,7 @@ const fundRaiseDb = new mongoose.Schema(
       type: verificationSyntax,
       default: {}
     },
-    
+
     statics: {
       type: staticsts,
       default: {}
