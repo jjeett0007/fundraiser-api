@@ -1,30 +1,31 @@
 const { FundRaise } = require("../../model/index");
 
-const deleteFundRaise = async ({ id, fundRaiseId }) => {
+const deleteFundRaise = async ({ id, fundraiseId }) => {
   try {
-    const fundRaise = await FundRaise.findById(fundRaiseId);
+    const fundRaise = await FundRaise.findById(fundraiseId);
+
+    if (!fundRaise) {
+      return { code: 404, message: "Fundraise not found." };
+    }
 
     const errorChecks = [
       {
-        condition: !fundRaise,
-        code: 404,
-        message: "Fundraise not found."
-      },
-      {
         condition: fundRaise.createdBy.toString() !== id,
         code: 403,
-        message: "You are not authorized to delete this fundraise."
+        message: "You are not authorized to delete this fundraise.",
       },
-       {
-        condition: fundRaise.verify.verificationId,
+      {
+        condition:
+          fundRaise.verify?.verificationId ||
+          fundRaise.verify?.isVerificationInitalized === true,
         code: 403,
-        message: "Fundraise is under review, can't be deleted."
+        message: "Fundraise is under review, can't be deleted.",
       },
       {
         condition: fundRaise.isInitialized,
         code: 400,
-        message: "Fundraise Initialized (started), can't be deleted"
-      }
+        message: "Fundraise Initialized (started), can't be deleted",
+      },
     ];
 
     const error = errorChecks.find((check) => check.condition);
@@ -33,11 +34,11 @@ const deleteFundRaise = async ({ id, fundRaiseId }) => {
       return { code: error.code, message: error.message };
     }
 
-    await FundRaise.findByIdAndDelete(fundRaiseId);
+    await FundRaise.findByIdAndDelete(fundraiseId);
 
     return {
       code: 200,
-      message: "Fundraise deleted successfully."
+      message: "Fundraise deleted successfully.",
     };
   } catch (error) {
     return error;

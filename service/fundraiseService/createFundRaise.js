@@ -8,7 +8,7 @@ const createFundRaise = async ({
   walletAddress,
   imageUrl,
   videoUrl,
-  id
+  id,
 }) => {
   try {
     const existingFundRaise = await FundRaise.findOne({ title });
@@ -16,7 +16,7 @@ const createFundRaise = async ({
     if (existingFundRaise) {
       return {
         code: 400,
-        message: "A fundraise with this title already exists."
+        message: "A fundraise with this title already exists.",
       };
     }
 
@@ -28,16 +28,26 @@ const createFundRaise = async ({
         category,
         walletAddress,
         imageUrl,
-        videoUrl
+        videoUrl,
       },
-      createdBy: id
+      createdBy: id,
     });
+
+    await Promise.all([
+      User.findByIdAndUpdate(id, {
+        $inc: { "statics.totalFundRaiseCreated": 1 },
+      }),
+    ]);
+
+    // process.nextTick(() => {
+
+    // });
 
     return {
       code: 200,
       data: {
-        fundRaiseId: fundRaise._id.toString()
-      }
+        fundRaiseId: fundRaise._id.toString(),
+      },
     };
   } catch (error) {
     return error;

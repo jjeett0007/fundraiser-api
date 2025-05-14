@@ -40,7 +40,6 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "isFundRaiseDeleted",
         "isFundRaiseFundsComplete",
         "isFundRaiseFundedCompletely",
-        "isFundRaisedStartedDate",
         "isFundRaisedEndDate",
         "isDeleted",
         "verify.verificationId",
