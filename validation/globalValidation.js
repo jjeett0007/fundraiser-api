@@ -165,6 +165,9 @@ const userInfoValidation = {
     meansOfVerification: Joi.string().required().messages({
       "any.required": "Means of verification is required",
     }),
+    idNumber: Joi.string().required().messages({
+      "any.required": "Id number is required",
+    }),
     selfie: Joi.string().uri().required().messages({
       "any.required": "Selfie is required",
       "string.uri": "Selfie must be a valid URI",

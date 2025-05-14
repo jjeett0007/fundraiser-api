@@ -1,6 +1,6 @@
 const { FundRaise, FundRaiseVerify } = require("../../model/index");
 
-const verifyFundRaise = async ({ id, fundraiseId, country, meansOfVerification, selfie, livenessVideo, documentData, mobileNumber, fundRaiseProofs }) => {
+const verifyFundRaise = async ({ id, fundraiseId, country, meansOfVerification, idNumber, selfie, livenessVideo, documentData, mobileNumber, fundRaiseProofs }) => {
     try {
         const fundRaise = await FundRaise.findById(fundraiseId);
 
@@ -45,6 +45,7 @@ const verifyFundRaise = async ({ id, fundraiseId, country, meansOfVerification, 
             userVerificationData: {
                 country: country,
                 meansOfVerification: meansOfVerification,
+                idNumber: idNumber,
                 selfie: selfie,
                 livenessVideo: livenessVideo,
                 documentData: documentData,

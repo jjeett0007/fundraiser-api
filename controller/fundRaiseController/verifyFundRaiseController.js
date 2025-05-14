@@ -6,6 +6,7 @@ const verifyFundRaiseController = catchAsync(async (req, res) => {
   const {
     country,
     meansOfVerification,
+    idNumber,
     selfie,
     livenessVideo,
     documentData,
@@ -19,6 +20,7 @@ const verifyFundRaiseController = catchAsync(async (req, res) => {
       fundraiseId,
       country,
       meansOfVerification,
+      idNumber,
       selfie,
       livenessVideo,
       documentData,
