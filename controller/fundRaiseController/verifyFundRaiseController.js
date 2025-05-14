@@ -1,4 +1,4 @@
-const verifyFundRaise = require("../../service/verifyFundRaise");
+const verifyFundRaise = require("../../service/verifyFundRaise/verifyFundRaise");
 
 const verifyFundRaiseController = catchAsync(async (req, res) => {
   const id = await getId(req, res);
