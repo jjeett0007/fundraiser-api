@@ -31,11 +31,11 @@ const userVerificationData = new mongoose.Schema(
       required: true,
     },
     selfie: {
-      type: fileType,
+      type: String,
       required: true,
     },
     livenessVideo: {
-      type: fileType,
+      type: String,
       required: true,
     },
     documentData: {
