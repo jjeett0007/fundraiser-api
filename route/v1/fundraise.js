@@ -24,6 +24,7 @@ const {
   startFundRaiseController,
   getMyFundRaise,
   verifyFundRaiseController,
+  getAllDonationsController,
 } = require("../../controller/fundRaiseController/index");
 
 router.post(
@@ -70,6 +71,12 @@ router.post(
   "/donate/:fundraiseId",
   validate(validateFundraiserId),
   validate(donationValidation),
+  fundFundRaiseController
+);
+
+router.get(
+  "/donate/:fundraiseId",
+  validate(validateFundraiserId),
   fundFundRaiseController
 );
 

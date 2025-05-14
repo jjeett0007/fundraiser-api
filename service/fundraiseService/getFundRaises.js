@@ -2,16 +2,14 @@ const { FundRaise } = require("../../model/index");
 const getPaginatedData = require("../../utils/paginationQueries");
 
 const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
-  const filter = {
-    isInitialized: true,
-    isFundRaiseStarted: true,
-    isFundRaiseEnded: false,
-    isFundRaiseActive: true,
-    isFundRaisedStopped: false,
-    isFundRaiseDeactivated: false,
-  };
+  const filter = {};
 
   if (!createdBy) {
+    filter.isInitialized = true;
+    filter.isFundRaiseStarted = true;
+    filter.isFundRaiseActive = true;
+    filter.isFundRaiseDeactivated = false;
+    filter.isFundRaisedStopped = false;
     filter["verify.isFundRaiseVerified"] = false;
   }
 
@@ -52,7 +50,6 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "verify.isFundRaiseVerifiedStatus",
         "verify.isVerificationInitalized",
         "verify.declinedComment",
-        "isFundRaiseDeactivated",
         "createdAt",
         "updatedAt",
         "__v",
@@ -68,11 +65,13 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "isFundRaiseVerifiedDate",
         "isInitialized",
         "isTotalDonor",
+        "reportCount",
       ],
     });
 
     return fundRaises;
   } catch (error) {
+    return error;
   }
 };
 

@@ -25,6 +25,11 @@ const fundFundRaise = async ({
         message: "Fundraise not started."
       },
       {
+        condition: fundRaise.isFundRaiseDeactivated,
+        code: 400,
+        message: "Fundraise is deactivated."
+      },
+      {
         condition: fundRaise.isFundRaisedStopped,
         code: 400,
         message: "Fundraise stopped."

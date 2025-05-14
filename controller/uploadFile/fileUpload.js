@@ -32,8 +32,7 @@ const uploadFile = catchAsync(async (req, res) => {
 
   const fileExtension = file.split(";")[0].split("/")[1];
 
-  const extension = getResourceType(fileExtension)
-  console.log(extension)
+  // const extension = getResourceType(fileExtension)
 
   const uploadOptions = {
     folder: "uploads",
