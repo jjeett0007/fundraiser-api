@@ -47,7 +47,6 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "verify.isFundRaiseVerifiedBy",
         "verify.isFundRaiseVerifiedComment",
         "verify.isFundRaiseVerifiedStatus",
-        "verify.isVerificationInitalized",
         "verify.declinedComment",
         "createdAt",
         "updatedAt",
