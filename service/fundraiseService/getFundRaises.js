@@ -16,7 +16,7 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
   }
 
   if (createdBy) {
-    filter.createdBy = createdBy
+    filter.createdBy = createdBy;
   }
 
   if (category) {
@@ -50,6 +50,8 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "verify.isFundRaiseVerifiedBy",
         "verify.isFundRaiseVerifiedComment",
         "verify.isFundRaiseVerifiedStatus",
+        "verify.isVerificationInitalized",
+        "verify.declinedComment",
         "isFundRaiseDeactivated",
         "createdAt",
         "updatedAt",
@@ -65,13 +67,12 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "isFundRaiseVerifiedStatus",
         "isFundRaiseVerifiedDate",
         "isInitialized",
-        "isTotalDonor"
-      ]
+        "isTotalDonor",
+      ],
     });
 
     return fundRaises;
   } catch (error) {
-    return { code: 500, message: "Server error.", error };
   }
 };
 

@@ -77,7 +77,6 @@ const verifyFundRaise = async ({
     return {
       code: 500,
       message: "Server error",
-      data: error,
     };
   }
 };
