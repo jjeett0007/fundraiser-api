@@ -70,14 +70,13 @@ router.get(
 router.post(
   "/donate/:fundraiseId",
   validate(validateFundraiserId),
-  validate(donationValidation),
   fundFundRaiseController
 );
 
 router.get(
   "/donate/:fundraiseId",
   validate(validateFundraiserId),
-  fundFundRaiseController
+  getAllDonationsController
 );
 
 router.get(
