@@ -1,7 +1,7 @@
 const {
   FundRaise,
   WalletAddress,
-  FundRaiseDonor
+  FundRaiseDonor,
 } = require("../../model/index");
 
 const {
@@ -13,7 +13,7 @@ const {
   rpc,
   getLatestBlockHash,
   sendAndConfirmTransaction,
-  transferToken
+  transferToken,
 } = require("../../lib/solana-block-service");
 
 const { removeAddressFromWebhook } = require("../../lib/helius");
@@ -28,7 +28,7 @@ const heliusHookHandler = async (data) => {
     timestamp,
     tokenTransfers,
     type,
-    signature
+    signature,
   } = data;
 
   try {
@@ -40,7 +40,7 @@ const heliusHookHandler = async (data) => {
             fromUserAccount,
             toUserAccount,
             tokenAmount,
-            tokenStandard
+            tokenStandard,
           } = tokenTransfers[0];
 
           if (tokenStandard === "Fungible") {
@@ -49,7 +49,7 @@ const heliusHookHandler = async (data) => {
             if (mintPublicKey === USDC_MINT) {
               // find address in database
               const donationInfo = await FundRaiseDonor.findOne({
-                walletAddress: toUserAccount
+                walletAddress: toUserAccount,
               })
                 .select(
                   "currentAmount amount fundRaiseId walletAddress walletInfo"
@@ -70,16 +70,13 @@ const heliusHookHandler = async (data) => {
                 const sendTokenToContract = await transferToken({
                   sourceKey: privateKey,
                   destinationAddress: contractAddress,
-                  amount: donationInfo.currentAmount + tokenAmount
+                  amount: tokenAmount,
+                  // amount: donationInfo.currentAmount + tokenAmount
                 });
 
                 console.log(sendTokenToContract);
 
-
-
-
                 // notify user
-
 
                 await Promise.all([
                   FundRaiseDonor.findByIdAndUpdate(
@@ -88,13 +85,13 @@ const heliusHookHandler = async (data) => {
                       $set: {
                         currentAmount: donationInfo.currentAmount + tokenAmount,
                         isFundPaid: true,
-                        blockTime: timestamp
+                        blockTime: timestamp,
                       },
                       $push: {
                         from: fromUserAccount,
                         signature: signature,
-                        tokenTypes: "USDC"
-                      }
+                        tokenTypes: "USDC",
+                      },
                     },
                     { new: true }
                   ),
@@ -102,16 +99,16 @@ const heliusHookHandler = async (data) => {
                     { walletAddress: walletAddress },
                     {
                       $inc: {
-                        "balance.usdcBalance": tokenAmount
+                        "balance.usdcBalance": tokenAmount,
                       },
                       $push: {
                         signature: signature,
-                        description: description
+                        description: description,
                       },
                       $set: {
                         feePayer: feePayer,
-                        fee: fee
-                      }
+                        fee: fee,
+                      },
                     }
                   ),
                   FundRaise.findByIdAndUpdate(
@@ -119,14 +116,14 @@ const heliusHookHandler = async (data) => {
                     {
                       $inc: {
                         "statics.totalRaised": tokenAmount,
-                        "statics.totalDonor": 1
+                        "statics.totalDonor": 1,
                       },
                       $max: {
-                        "statics.largestAmount": tokenAmount
-                      }
+                        "statics.largestAmount": tokenAmount,
+                      },
                     },
                     { new: true }
-                  )
+                  ),
                 ]);
 
                 // remove from webhook
@@ -134,17 +131,16 @@ const heliusHookHandler = async (data) => {
                   removeAddressFromWebhook(toUserAccount);
                 });
 
-
                 return {
                   code: 200,
-                  message: "Operation Success"
+                  message: "Operation Success",
                 };
               }
             }
           } else {
             return {
               code: 404,
-              message: "No token transfer found"
+              message: "No token transfer found",
             };
           }
         }
@@ -153,13 +149,13 @@ const heliusHookHandler = async (data) => {
       if (source === "SYSTEM_PROGRAM") {
         return {
           code: 200,
-          message: "SOL GET"
+          message: "SOL GET",
         };
       }
     } else {
       return {
         code: 404,
-        message: "type must be TRANSFER"
+        message: "type must be TRANSFER",
       };
     }
   } catch (error) {
