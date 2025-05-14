@@ -2,6 +2,17 @@
 
 const mongoose = require("mongoose");
 
+const fileType = new mongoose.Schema({
+    type: {
+        type: String,
+        required: true
+    },
+    file: {
+        type: String,
+        required: true
+    }
+}, { _id: false })
+
 
 const userVerificationData = new mongoose.Schema({
     country: {
@@ -13,7 +24,11 @@ const userVerificationData = new mongoose.Schema({
         required: true
     },
     selfie: {
-        type: String,
+        type: fileType,
+        required: true
+    },
+    livenessVideo: {
+        type: fileType,
         required: true
     },
     documentData: {
@@ -31,16 +46,7 @@ const userVerificationData = new mongoose.Schema({
     }
 }, { _id: false })
 
-const fileType = new mongoose.Schema({
-    type: {
-        type: String,
-        required: true
-    },
-    file: {
-        type: String,
-        required: true
-    }
-}, { _id: false })
+
 
 const methodOfValidation = new mongoose.Schema({
     fundraiseData: {

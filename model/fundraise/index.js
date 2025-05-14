@@ -89,6 +89,10 @@ const verificationSyntax = new mongoose.Schema({
     ref: "Fundraise-verify",
     default: null
   },
+  isVerificationInitalized: {
+    type: Boolean,
+    default: false
+  },
   isFundRaiseVerified: {
     type: Boolean,
     default: false
@@ -111,6 +115,10 @@ const verificationSyntax = new mongoose.Schema({
     enum: ["approved", "rejected"],
     default: null
   },
+  declinedComment: {
+    type: String,
+    default: null
+  }
 }, { _id: false })
 
 

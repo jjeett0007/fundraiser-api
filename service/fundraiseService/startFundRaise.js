@@ -9,38 +9,45 @@ const startFundRaise = async ({ id, fundraiseId }) => {
       {
         condition: !fundRaise,
         code: 404,
-        message: "Fundraise not found."
+        message: "Fundraise not found.",
       },
       {
         condition: fundRaise.createdBy.toString() !== id,
         code: 403,
-        message: "Unauthorized."
+        message: "Unauthorized.",
+      },
+      {
+        condition: fundRaise.isInitialized,
+        code: 400,
+        message: "Fundraise already started.",
       },
       {
         condition: fundRaise.isFundRaisedStopped,
         code: 400,
-        message: "Fundraise already stopped."
+        message: "Fundraise already stopped.",
       },
       {
-        condition: !fundRaise.verify?.verificationId || fundRaise.verify?.verificationId === null,
+        condition:
+          !fundRaise.verify?.verificationId ||
+          fundRaise.verify?.verificationId === null,
         code: 403,
-        message: "Verify your Identity for this fundraise."
+        message: "Verify your Identity for this fundraise.",
       },
       {
-        condition: fundRaise.verify.isFundRaiseVerified === false,
+        condition: fundRaise.verify?.isVerificationInitalized === true,
         code: 403,
-        message: "Pending verification"
+        message: "Under Verification",
       },
       {
         condition: fundRaise.isFundRaiseEnded,
         code: 400,
-        message: "Fundraise already ended."
+        message: "Fundraise already ended.",
       },
       {
         condition: fundRaise.isFundRaiseStarted,
         code: 400,
-        message: "Fundraise already started."
-      }
+        message: "Fundraise already started.",
+      },
     ];
 
     const error = errorChecks.find((check) => check.condition);
@@ -60,7 +67,7 @@ const startFundRaise = async ({ id, fundraiseId }) => {
         isFundRaiseStarted: true,
         isFundRaiseEnded: false,
         isFundRaiseActive: true,
-        isFundRaisedStartedDate: new Date()
+        isFundRaisedStartedDate: new Date(),
       },
       { new: true }
     );

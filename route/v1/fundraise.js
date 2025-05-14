@@ -10,7 +10,8 @@ const {
   donationValidation,
   queryValidation,
   validateFundraiserId,
-  validateDonationId
+  validateDonationId,
+  userInfoValidation,
 } = require("../../validation/globalValidation");
 
 // controllers
@@ -21,7 +22,8 @@ const {
   getFundRaiseByIdController,
   getPaymentInfoController,
   startFundRaiseController,
-  getMyFundRaise
+  getMyFundRaise,
+  verifyFundRaiseController,
 } = require("../../controller/fundRaiseController/index");
 
 router.post(
@@ -32,12 +34,16 @@ router.post(
   createFundRaiseController
 );
 
-router.get(
-  "/get",
+router.post(
+  "/verify/:fundraiseId",
   isUserAuthenticated,
   isAccountVerified,
-  getMyFundRaise
+  validate(validateFundraiserId),
+  validate(userInfoValidation),
+  verifyFundRaiseController
 );
+
+router.get("/get", isUserAuthenticated, isAccountVerified, getMyFundRaise);
 
 router.post(
   "/start-fundraise/:fundraiseId",
