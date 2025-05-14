@@ -74,7 +74,6 @@ const verifyFundRaise = async ({
       message: "Verification Data accepted",
     };
   } catch (error) {
-    console.log(error);
     return {
       code: 500,
       message: "Server error",
