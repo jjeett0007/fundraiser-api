@@ -74,6 +74,19 @@ const methodOfValidation = new mongoose.Schema({
     type: [fileType],
     required: true,
   },
+  isFundRaiseVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isFundRaiseVerifiedDate: {
+    type: Date,
+    default: null,
+  },
+  isFundRaiseVerifiedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Admin",
+    default: null,
+  },
 });
 
 const FundRaiseVerify = mongoose.model("Fundraise-verify", methodOfValidation);

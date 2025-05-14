@@ -28,7 +28,7 @@ const getPaginatedData = async ({
     if (includeUser) {
       query = query.populate(
         "createdBy",
-        "_id"
+        "_id email profile, profileImages"
       );
     } else if (populateFields && populateFields.trim() !== "") {
       let fields = populateFields.split(" ");
