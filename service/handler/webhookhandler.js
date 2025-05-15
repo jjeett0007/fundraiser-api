@@ -7,12 +7,6 @@ const {
 const {
   USDC_MINT,
   getPublicKey,
-  getPrivKey,
-  defaultFeePayer,
-  tokenProgram,
-  rpc,
-  getLatestBlockHash,
-  sendAndConfirmTransaction,
   transferToken,
 } = require("../../lib/solana-block-service");
 

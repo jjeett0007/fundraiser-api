@@ -43,7 +43,12 @@ const envVarsSchema = Joi.object()
 
     CLOUDINARY_CLOUD_NAME: Joi.string(),
     CLOUDINARY_API_KEY: Joi.string(),
-    CLOUDINARY_API_SECRET: Joi.string()
+    CLOUDINARY_API_SECRET: Joi.string(),
+
+    SOLANA_RPC_NETWORK: Joi.string(),
+    FEE_PAYER_SECRET: Joi.string(),
+    USDC_MINT_ADDRESS: Joi.string(),
+    SOL_MINT_ADDRESS: Joi.string(),
   })
   .unknown();
 
@@ -63,13 +68,13 @@ module.exports = {
     username: envVars.MONGODB_USERNAME,
     password: envVars.MONGODB_PASSWORD,
     url: envVars.MONGODB_URL,
-    database: envVars.MONGODB_DATABASE
+    database: envVars.MONGODB_DATABASE,
   },
 
   jwt: {
     secret: envVars.JWT_SECRET,
     accessExpirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
-    refreshExpirationMinutes: envVars.JWT_REFRESH_EXPIRATION_MINUTES
+    refreshExpirationMinutes: envVars.JWT_REFRESH_EXPIRATION_MINUTES,
   },
 
   email: {
@@ -78,10 +83,10 @@ module.exports = {
       port: envVars.SMTP_PORT,
       auth: {
         username: envVars.SMTP_MAIL,
-        password: envVars.SMTP_PASSWORD
-      }
+        password: envVars.SMTP_PASSWORD,
+      },
     },
-    from: envVars.EMAIL_FROM
+    from: envVars.EMAIL_FROM,
   },
 
   firebase: {
@@ -92,31 +97,37 @@ module.exports = {
     storageBucket: envVars.STORAGE_BUCKET,
     messagingSenderId: envVars.MESSAGING_SENDER_ID,
     appId: envVars.APP_ID,
-    measurementId: envVars.MEASUREMENT_ID
+    measurementId: envVars.MEASUREMENT_ID,
   },
 
   ping: {
-    url: envVars.PING_URL
+    url: envVars.PING_URL,
   },
 
   socket: {
-    origin: envVars.SOCKET_ORIGIN
+    origin: envVars.SOCKET_ORIGIN,
   },
 
   google: {
     client_id: envVars.GOOGLE_CLIENT_ID,
     client_secret: envVars.GOOGLE_CLIENT_SECRET,
-    client_uri: envVars.GOOGLE_CLIENT_URI
+    client_uri: envVars.GOOGLE_CLIENT_URI,
   },
 
   protocol: {
     server_origin: envVars.SERVER_ORIGIN,
-    frontend_origin: envVars.FRONTEND_ORIGIN
+    frontend_origin: envVars.FRONTEND_ORIGIN,
   },
 
   cloudinary: {
     cloud_name: envVars.CLOUDINARY_CLOUD_NAME,
     api_key: envVars.CLOUDINARY_API_KEY,
-    api_secret: envVars.CLOUDINARY_API_SECRET
-  }
+    api_secret: envVars.CLOUDINARY_API_SECRET,
+  },
+  block: {
+    network: envVars.SOLANA_RPC_NETWORK,
+    feePayer: envVars.FEE_PAYER_SECRET,
+    usdcMint: envVars.USDC_MINT_ADDRESS,
+    solanaNative: envVars.SOL_MINT_ADDRESS,
+  },
 };
