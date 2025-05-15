@@ -56,7 +56,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
     }
 
     const { contract, fundMetaData } = fundRaise;
-    console.log({ contract, fundMetaData.walletAddress });
+    console.log({ contract, fundMetaData });
 
     // await FundRaise.findByIdAndUpdate(
     //   fundraiseId,
