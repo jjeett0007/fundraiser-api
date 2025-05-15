@@ -118,6 +118,9 @@ const heliusHookHandler = async (data) => {
                         "statics.totalRaised": tokenAmount,
                         "statics.totalDonor": 1,
                       },
+                      $set: {
+                        "statics.lastPaymentTime": new Date(),
+                      },
                       $max: {
                         "statics.largestAmount": tokenAmount,
                       },
