@@ -1,9 +1,11 @@
 const { FundRaise } = require("../../model/index");
-const { generateAddress } = require("../generate/generate");
 
-const startFundRaise = async ({ id, fundraiseId }) => {
+const withdrawFundRaised = async ({ id, fundraiseId }) => {
   try {
-    const fundRaise = await FundRaise.findById(fundraiseId);
+    const fundRaise = await FundRaise.findById(fundraiseId).populate(
+      "contract",
+      "privateKey walletAddress"
+    );
 
     if (!fundRaise) {
       return {
@@ -14,19 +16,14 @@ const startFundRaise = async ({ id, fundraiseId }) => {
 
     const errorChecks = [
       {
-        condition: !fundRaise,
-        code: 404,
-        message: "Fundraise not found.",
-      },
-      {
         condition: fundRaise.createdBy.toString() !== id,
         code: 403,
         message: "Unauthorized.",
       },
       {
-        condition: fundRaise.isInitialized,
+        condition: !fundRaise.isFundRaiseStarted,
         code: 400,
-        message: "Fundraise already started.",
+        message: "Fundraise not started.",
       },
       {
         condition: fundRaise.isFundRaisedStopped,
@@ -50,11 +47,6 @@ const startFundRaise = async ({ id, fundraiseId }) => {
         code: 400,
         message: "Fundraise already ended.",
       },
-      {
-        condition: fundRaise.isFundRaiseStarted,
-        code: 400,
-        message: "Fundraise already started.",
-      },
     ];
 
     const error = errorChecks.find((check) => check.condition);
@@ -63,27 +55,30 @@ const startFundRaise = async ({ id, fundraiseId }) => {
       return { code: error.code, message: error.message };
     }
 
-    const getContractAddress = await generateAddress("contract");
+    const { contract, fundMetaData } = fundRaise;
+    console.log({ contract, fundMetaData.walletAddress });
 
-    await FundRaise.findByIdAndUpdate(
-      fundraiseId,
-      {
-        contract: getContractAddress.id,
-        contractAddress: getContractAddress.address,
-        isInitialized: true,
-        isFundRaiseStarted: true,
-        isFundRaiseEnded: false,
-        isFundRaiseActive: true,
-        isFundRaisedStartedDate: new Date(),
-      },
-      { new: true }
-    );
+    // await FundRaise.findByIdAndUpdate(
+    //   fundraiseId,
+    //   {
+    //     isFundRaiseEnded: true,
+    //     isFundRaiseActive: false,
+    //     isFundRaisedEndDate: new Date(),
+    //     isFundRaiseFunded: true,
+    //     isFundRaisedStopped: true,
+    //     isFundRaiseFundsComplete: true,
+    //   },
+    //   { new: true }
+    // );
 
-    return { code: 200, message: "Fundraise started." };
+    return {
+      code: 200,
+      message: "withdraw sent to your wallet",
+    };
   } catch (error) {
-    console.error("Error in startFundRaise:", error);
-    return { code: 500, message: "Server error.", error };
+    return error;
   }
 };
 
-module.exports = startFundRaise;
+
+module.exports = withdrawFundRaised

@@ -8,8 +8,11 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
     filter.isInitialized = true;
     filter.isFundRaiseStarted = true;
     filter.isFundRaiseActive = true;
+    filter.isFundRaiseEnded = false;
+    filter.isFundRaiseFunded = false;
     filter.isFundRaiseDeactivated = false;
     filter.isFundRaisedStopped = false;
+    filter.isFundRaiseFundsComplete = false;
     filter["verify.isFundRaiseVerified"] = false;
   }
 
