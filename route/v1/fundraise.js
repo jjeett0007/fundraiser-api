@@ -26,6 +26,7 @@ const {
   verifyFundRaiseController,
   getAllDonationsController,
   deleteFundRaiseController,
+  withdrawFundsController,
 } = require("../../controller/fundRaiseController/index");
 
 router.post(
@@ -43,6 +44,14 @@ router.post(
   validate(validateFundraiserId),
   validate(userInfoValidation),
   verifyFundRaiseController
+);
+
+router.post(
+  "/withdraw/:fundraiseId",
+  isUserAuthenticated,
+  isAccountVerified,
+  validate(validateFundraiserId),
+  withdrawFundsController
 );
 
 router.delete(
