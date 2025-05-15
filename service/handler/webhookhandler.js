@@ -7,12 +7,6 @@ const {
 const {
   USDC_MINT,
   getPublicKey,
-  getPrivKey,
-  defaultFeePayer,
-  tokenProgram,
-  rpc,
-  getLatestBlockHash,
-  sendAndConfirmTransaction,
   transferToken,
 } = require("../../lib/solana-block-service");
 
@@ -117,6 +111,9 @@ const heliusHookHandler = async (data) => {
                       $inc: {
                         "statics.totalRaised": tokenAmount,
                         "statics.totalDonor": 1,
+                      },
+                      $set: {
+                        "statics.lastPaymentTime": new Date(),
                       },
                       $max: {
                         "statics.largestAmount": tokenAmount,
