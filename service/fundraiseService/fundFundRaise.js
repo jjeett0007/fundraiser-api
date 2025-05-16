@@ -75,6 +75,7 @@ const fundFundRaise = async ({
     }
 
     const paymentReference = await generateAddress("payment");
+    await addAddressToWebhook(paymentReference.address);
 
     const getFundData = await FundRaiseDonor.create({
       name,
@@ -87,7 +88,6 @@ const fundFundRaise = async ({
       walletInfo: paymentReference.id,
     });
 
-    await addAddressToWebhook(paymentReference.address);
 
     return {
       code: 200,
