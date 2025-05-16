@@ -9,6 +9,7 @@ const verifyFundRaiseController = require("./verifyFundRaiseController");
 const getAllDonationsController = require("./getAllDonation");
 const deleteFundRaiseController = require("./deleteFundRaiseController");
 const withdrawFundsController = require("./withdrawFundsController");
+const paymentMadeController = require("./paymentMade");
 
 module.exports = {
   createFundRaiseController,
@@ -21,5 +22,6 @@ module.exports = {
   verifyFundRaiseController,
   getAllDonationsController,
   deleteFundRaiseController,
-  withdrawFundsController
+  withdrawFundsController,
+  paymentMadeController
 };
