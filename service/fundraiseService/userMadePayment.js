@@ -38,8 +38,6 @@ const userMadePayment = async ({ donateId }) => {
       };
     }
 
-    console.log(tokensFound);
-
     const { privateKey, walletAddress } = getDonateInfo.walletInfo;
     const { _id, contractAddress } = getDonateInfo.fundRaiseId;
 
@@ -110,6 +108,7 @@ const userMadePayment = async ({ donateId }) => {
       message: "Thanks for your payment",
     };
   } catch (error) {
+    console.log(error)
     return error;
   }
 };
