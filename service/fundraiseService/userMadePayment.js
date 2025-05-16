@@ -45,7 +45,10 @@ const userMadePayment = async ({ donateId }) => {
     const tokenAmount = tokensFound.data.account.data.parsed.info.tokenAmount;
 
     // Convert amount string to number and adjust for decimals
-    const newCurrentAmount = getDonateInfo.currentAmount + tokenAmount.uiAmount;
+    const newCurrentAmount =
+      Number(getDonateInfo.currentAmount) + Number(tokenAmount.uiAmount);
+
+      console.log("New current amount:", newCurrentAmount)
 
     const sendTokenToContract = await transferToken({
       sourceKey: privateKey,
@@ -108,7 +111,7 @@ const userMadePayment = async ({ donateId }) => {
       message: "Thanks for your payment",
     };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return error;
   }
 };
