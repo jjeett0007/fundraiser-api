@@ -36,7 +36,7 @@ const userVerificationData = new mongoose.Schema(
     },
     livenessVideo: {
       type: String,
-      required: true,
+      required: false,
     },
     documentData: {
       frontView: {

@@ -1,4 +1,5 @@
 const { FundRaise } = require("../../model/index");
+const { transferToken } = require("../../lib/solana-block-service");
 
 const withdrawFundRaised = async ({ id, fundraiseId }) => {
   try {
@@ -26,22 +27,22 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
         message: "Fundraise not started.",
       },
       {
-        condition: fundRaise.isFundRaisedStopped,
+        condition: fundRaise.isFundRaiseFundsComplete,
         code: 400,
-        message: "Fundraise already stopped.",
+        message: "Fundraise already completed.",
       },
-      {
-        condition:
-          !fundRaise.verify?.verificationId ||
-          fundRaise.verify?.verificationId === null,
-        code: 403,
-        message: "Verify your Identity for this fundraise.",
-      },
-      {
-        condition: fundRaise.verify?.isVerificationInitalized === true,
-        code: 403,
-        message: "Under Verification",
-      },
+      // {
+      //   condition:
+      //     !fundRaise.verify?.verificationId ||
+      //     fundRaise.verify?.verificationId === null,
+      //   code: 403,
+      //   message: "Verify your Identity for this fundraise.",
+      // },
+      // {
+      //   condition: fundRaise.verify?.isVerificationInitalized === true,
+      //   code: 403,
+      //   message: "Under Verification",
+      // },
       {
         condition: fundRaise.isFundRaiseEnded,
         code: 400,
@@ -55,21 +56,31 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
       return { code: error.code, message: error.message };
     }
 
-    const { contract, fundMetaData } = fundRaise;
-    console.log({ contract, fundMetaData });
+    const { contract, fundMetaData, statics } = fundRaise;
+    console.log({ contract, fundMetaData, statics });
 
-    // await FundRaise.findByIdAndUpdate(
-    //   fundraiseId,
-    //   {
-    //     isFundRaiseEnded: true,
-    //     isFundRaiseActive: false,
-    //     isFundRaisedEndDate: new Date(),
-    //     isFundRaiseFunded: true,
-    //     isFundRaisedStopped: true,
-    //     isFundRaiseFundsComplete: true,
-    //   },
-    //   { new: true }
-    // );
+    const sendTokenToContract = await transferToken({
+      sourceKey: contract.privateKey,
+      destinationAddress: fundMetaData.walletAddress,
+      amount: statics.totalRaised,
+    });
+
+    console.log(sendTokenToContract);
+
+
+    await FundRaise.findByIdAndUpdate(
+      fundraiseId,
+      {
+        isFundRaiseEnded: true,
+        isFundRaiseActive: false,
+        isFundRaisedEndDate: new Date(),
+        isFundRaiseFunded: true,
+        isFundRaisedStopped: true,
+        isFundRaiseFundsComplete: true,
+        isFundRaiseFundedCompletely: true,
+      },
+      { new: true }
+    );
 
     return {
       code: 200,
