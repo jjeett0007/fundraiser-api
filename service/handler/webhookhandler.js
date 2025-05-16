@@ -124,6 +124,8 @@ const heliusHookHandler = async (data) => {
                   removeAddressFromWebhook(toUserAccount),
                 ]);
 
+                console.log("it is done")
+
                 return {
                   code: 200,
                   message: "Operation Success",
