@@ -1,11 +1,19 @@
-const { FundRaiseDonor } = require("../../model/index");
+const {
+  FundRaiseDonor,
+  WalletAddress,
+  FundRaise,
+} = require("../../model/index");
 const { getATokenAccounts } = require("../../lib/getTokenAccounts");
+const { transferToken } = require("../../lib/solana-block-service");
 
 const userMadePayment = async ({ donateId }) => {
   try {
-    const getDonateInfo = await FundRaiseDonor.findById(donateId).select(
-      "_id name email note anonymous fundRaiseId, walletAddress amount isFundPaid"
-    );
+    const getDonateInfo = await FundRaiseDonor.findById(donateId)
+      .select(
+        "_id name email note anonymous fundRaiseId, walletAddress amount isFundPaid"
+      )
+      .populate("walletInfo", "privateKey walletAddress")
+      .populate("fundRaiseId", "_id contractAddress");
 
     if (!getDonateInfo) {
       return {
@@ -31,6 +39,70 @@ const userMadePayment = async ({ donateId }) => {
     }
 
     console.log(tokensFound);
+
+    const { privateKey, walletAddress } = getDonateInfo.walletInfo;
+    const { _id, contractAddress } = getDonateInfo.fundRaiseId;
+
+    // Extract tokenAmount from tokensFound
+    const tokenAmount = tokensFound.data.account.data.parsed.info.tokenAmount;
+
+    // Convert amount string to number and adjust for decimals
+    const newCurrentAmount = getDonateInfo.currentAmount + tokenAmount.uiAmount;
+
+    const sendTokenToContract = await transferToken({
+      sourceKey: privateKey,
+      destinationAddress: contractAddress,
+      amount: tokenAmount.uiAmount,
+    });
+
+    console.log(sendTokenToContract);
+
+    await FundRaiseDonor.findByIdAndUpdate(
+      donateId,
+      {
+        $set: {
+          currentAmount: newCurrentAmount,
+          isFundPaid: newCurrentAmount >= getDonateInfo.amount,
+          blockTime: new Date(),
+        },
+      },
+      { new: true }
+    );
+
+    await WalletAddress.findOneAndUpdate(
+      { walletAddress: walletAddress },
+      {
+        $inc: {
+          "balance.usdcBalance": tokenAmount.uiAmount,
+        },
+      }
+    );
+
+    if (newCurrentAmount < getDonateInfo.amount) {
+      return {
+        code: 403,
+        message: `Payment detected, but incomplete amount, send ${
+          getDonateInfo.amount - newCurrentAmount
+        } to complete your donation. Thank you`,
+      };
+    }
+
+    await FundRaise.findByIdAndUpdate(
+      _id,
+      {
+        $inc: {
+          "statics.totalRaised": tokenAmount,
+          "statics.totalDonor": 1,
+        },
+        $set: {
+          "statics.lastPaymentTime": new Date(),
+        },
+        $max: {
+          "statics.largestAmount": tokenAmount.uiAmount,
+        },
+      },
+      { new: true }
+    );
 
     return {
       code: 200,

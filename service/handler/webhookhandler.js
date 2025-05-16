@@ -61,83 +61,83 @@ const heliusHookHandler = async (data) => {
                 const { privateKey, walletAddress } = donationInfo.walletInfo;
                 const { _id, contractAddress } = donationInfo.fundRaiseId;
 
-                const sendTokenToContract = await transferToken({
-                  sourceKey: privateKey,
-                  destinationAddress: contractAddress,
-                  amount: tokenAmount,
-                  // amount: donationInfo.currentAmount + tokenAmount
-                });
+                // const sendTokenToContract = await transferToken({
+                //   sourceKey: privateKey,
+                //   destinationAddress: contractAddress,
+                //   amount: tokenAmount,
+                //   // amount: donationInfo.currentAmount + tokenAmount
+                // });
 
-                console.log(sendTokenToContract);
+                // console.log(sendTokenToContract);
 
                 // notify user
 
-                const results = await Promise.allSettled([
-                  FundRaiseDonor.findByIdAndUpdate(
-                    donationInfo._id.toString(),
-                    {
-                      $set: {
-                        currentAmount: donationInfo.currentAmount + tokenAmount,
-                        isFundPaid: true,
-                        blockTime: timestamp,
-                      },
-                      $push: {
-                        from: fromUserAccount,
-                        signature: signature,
-                        tokenTypes: "USDC",
-                      },
-                    },
-                    { new: true }
-                  ),
-                  WalletAddress.findOneAndUpdate(
-                    { walletAddress: walletAddress },
-                    {
-                      $inc: {
-                        "balance.usdcBalance": tokenAmount,
-                      },
-                      $push: {
-                        signature: signature,
-                        description: description,
-                      },
-                      $set: {
-                        feePayer: feePayer,
-                        fee: fee,
-                      },
-                    }
-                  ),
-                  FundRaise.findByIdAndUpdate(
-                    _id,
-                    {
-                      $inc: {
-                        "statics.totalRaised": tokenAmount,
-                        "statics.totalDonor": 1,
-                      },
-                      $set: {
-                        "statics.lastPaymentTime": new Date(),
-                      },
-                      $max: {
-                        "statics.largestAmount": tokenAmount,
-                      },
-                    },
-                    { new: true }
-                  ),
-                  removeAddressFromWebhook(toUserAccount),
-                ]);
+                // const results = await Promise.allSettled([
+                //   FundRaiseDonor.findByIdAndUpdate(
+                //     donationInfo._id.toString(),
+                //     {
+                //       $set: {
+                //         currentAmount: donationInfo.currentAmount + tokenAmount,
+                //         isFundPaid: true,
+                //         blockTime: timestamp,
+                //       },
+                //       $push: {
+                //         from: fromUserAccount,
+                //         signature: signature,
+                //         tokenTypes: "USDC",
+                //       },
+                //     },
+                //     { new: true }
+                //   ),
+                //   WalletAddress.findOneAndUpdate(
+                //     { walletAddress: walletAddress },
+                //     {
+                //       $inc: {
+                //         "balance.usdcBalance": tokenAmount,
+                //       },
+                //       $push: {
+                //         signature: signature,
+                //         description: description,
+                //       },
+                //       $set: {
+                //         feePayer: feePayer,
+                //         fee: fee,
+                //       },
+                //     }
+                //   ),
+                //   FundRaise.findByIdAndUpdate(
+                //     _id,
+                //     {
+                //       $inc: {
+                //         "statics.totalRaised": tokenAmount,
+                //         "statics.totalDonor": 1,
+                //       },
+                //       $set: {
+                //         "statics.lastPaymentTime": new Date(),
+                //       },
+                //       $max: {
+                //         "statics.largestAmount": tokenAmount,
+                //       },
+                //     },
+                //     { new: true }
+                //   ),
+                //   removeAddressFromWebhook(toUserAccount),
+                // ]);
 
-                // Handle results of each promise
-                results.forEach((result, index) => {
-                  if (result.status === "rejected") {
-                    console.error(
-                      `Error in Promise ${index + 1}:`,
-                      result.reason
-                    );
-                  } else {
-                    console.log(
-                      `Promise ${index + 1} succeeded:`,
-                      result.value
-                    );
-                  }
-                });
+                // // Handle results of each promise
+                // results.forEach((result, index) => {
+                //   if (result.status === "rejected") {
+                //     console.error(
+                //       `Error in Promise ${index + 1}:`,
+                //       result.reason
+                //     );
+                //   } else {
+                //     console.log(
+                //       `Promise ${index + 1} succeeded:`,
+                //       result.value
+                //     );
+                //   }
+                // });
 
                 console.log("it is done");
 
