@@ -72,7 +72,7 @@ const heliusHookHandler = async (data) => {
 
                 // notify user
 
-                await Promise.all([
+                const results = await Promise.allSettled([
                   FundRaiseDonor.findByIdAndUpdate(
                     donationInfo._id.toString(),
                     {
@@ -124,7 +124,22 @@ const heliusHookHandler = async (data) => {
                   removeAddressFromWebhook(toUserAccount),
                 ]);
 
-                console.log("it is done")
+                // Handle results of each promise
+                results.forEach((result, index) => {
+                  if (result.status === "rejected") {
+                    console.error(
+                      `Error in Promise ${index + 1}:`,
+                      result.reason
+                    );
+                  } else {
+                    console.log(
+                      `Promise ${index + 1} succeeded:`,
+                      result.value
+                    );
+                  }
+                });
+
+                console.log("it is done");
 
                 return {
                   code: 200,
