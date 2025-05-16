@@ -10,7 +10,7 @@ const userMadePayment = async ({ donateId }) => {
   try {
     const getDonateInfo = await FundRaiseDonor.findById(donateId)
       .select(
-        "_id name email note anonymous fundRaiseId, walletAddress amount isFundPaid"
+        "_id name email note anonymous fundRaiseId, walletAddress amount isFundPaid currentAmount"
       )
       .populate("walletInfo", "privateKey walletAddress")
       .populate("fundRaiseId", "_id contractAddress");
@@ -44,11 +44,22 @@ const userMadePayment = async ({ donateId }) => {
     // Extract tokenAmount from tokensFound
     const tokenAmount = tokensFound.data.account.data.parsed.info.tokenAmount;
 
+    console.log(tokenAmount);
+
+    console.log("New main amount:", getDonateInfo.currentAmount);
+
     // Convert amount string to number and adjust for decimals
     const newCurrentAmount =
       Number(getDonateInfo.currentAmount) + Number(tokenAmount.uiAmount);
 
-      console.log("New current amount:", newCurrentAmount)
+    console.log("New current amount:", tokenAmount.uiAmount);
+
+    if (tokenAmount.uiAmount === 0) {
+      return {
+        code: 404,
+        message: "payment not received, try again",
+      };
+    }
 
     const sendTokenToContract = await transferToken({
       sourceKey: privateKey,
@@ -84,7 +95,7 @@ const userMadePayment = async ({ donateId }) => {
         code: 403,
         message: `Payment detected, but incomplete amount, send ${
           getDonateInfo.amount - newCurrentAmount
-        } to complete your donation. Thank you`,
+        } USDC to complete your donation. Thank you`,
       };
     }
 
@@ -92,7 +103,7 @@ const userMadePayment = async ({ donateId }) => {
       _id,
       {
         $inc: {
-          "statics.totalRaised": tokenAmount,
+          "statics.totalRaised": tokenAmount.uiAmount,
           "statics.totalDonor": 1,
         },
         $set: {
