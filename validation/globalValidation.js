@@ -172,10 +172,10 @@ const userInfoValidation = {
       "any.required": "Selfie is required",
       "string.uri": "Selfie must be a valid URI",
     }),
-    livenessVideo: Joi.string().uri().required().messages({
-      "any.required": "Liveness video is required",
-      "string.uri": "Liveness video must be a valid URI",
-    }),
+    // livenessVideo: Joi.string().uri().required().messages({
+    //   "any.required": "Liveness video is required",
+    //   "string.uri": "Liveness video must be a valid URI",
+    // }),
     documentData: Joi.object({
       frontView: Joi.string().uri().required().messages({
         "any.required": "Front view is required",

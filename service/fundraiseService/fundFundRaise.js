@@ -62,7 +62,7 @@ const fundFundRaise = async ({
           await FundRaise.findByIdAndUpdate(
             fundRaise._id.toString(),
             {
-              isFundRaiseEnded: true,
+              isFundRaiseFundedCompletely: true,
               isFundRaisedStopped: true,
               isFundRaiseActive: false,
               isFundRaisedEndDate: new Date(),
@@ -75,8 +75,8 @@ const fundFundRaise = async ({
     }
 
     const paymentReference = await generateAddress("payment");
-    const adding = await addAddressToWebhook(paymentReference.address);
-    console.log(adding);
+    // const adding = await addAddressToWebhook(paymentReference.address);
+    // console.log(adding);
 
     const getFundData = await FundRaiseDonor.create({
       name,

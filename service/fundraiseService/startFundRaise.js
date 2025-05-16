@@ -33,18 +33,18 @@ const startFundRaise = async ({ id, fundraiseId }) => {
         code: 400,
         message: "Fundraise already stopped.",
       },
-      {
-        condition:
-          !fundRaise.verify?.verificationId ||
-          fundRaise.verify?.verificationId === null,
-        code: 403,
-        message: "Verify your Identity for this fundraise.",
-      },
-      {
-        condition: fundRaise.verify?.isVerificationInitalized === true,
-        code: 403,
-        message: "Under Verification",
-      },
+      // {
+      //   condition:
+      //     !fundRaise.verify?.verificationId ||
+      //     fundRaise.verify?.verificationId === null,
+      //   code: 403,
+      //   message: "Verify your Identity for this fundraise.",
+      // },
+      // {
+      //   condition: fundRaise.verify?.isVerificationInitalized === true,
+      //   code: 403,
+      //   message: "Under Verification",
+      // },
       {
         condition: fundRaise.isFundRaiseEnded,
         code: 400,
