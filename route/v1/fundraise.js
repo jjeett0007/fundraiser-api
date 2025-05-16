@@ -27,6 +27,7 @@ const {
   getAllDonationsController,
   deleteFundRaiseController,
   withdrawFundsController,
+  paymentMadeController,
 } = require("../../controller/fundRaiseController/index");
 
 router.post(
@@ -102,6 +103,12 @@ router.get(
   "/donate/info/:donateId",
   validate(validateDonationId),
   getPaymentInfoController
+);
+
+router.get(
+  "/donate/check/:donateId",
+  validate(validateDonationId),
+  paymentMadeController
 );
 
 module.exports = router;
