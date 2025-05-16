@@ -74,7 +74,7 @@ const startFundRaise = async ({ id, fundraiseId }) => {
         isFundRaiseStarted: true,
         isFundRaiseEnded: false,
         isFundRaiseActive: true,
-        isFundRaiseFundsComplete: true,
+        isFundRaiseFundsComplete: false,
         isFundRaisedStartedDate: new Date(),
       },
       { new: true }
