@@ -77,7 +77,7 @@ const fundFundRaise = async ({
     const paymentReference = await generateAddress("payment");
     const adding = await addAddressToWebhook(paymentReference.address);
     console.log(adding);
-    
+
     const getFundData = await FundRaiseDonor.create({
       name,
       email,
