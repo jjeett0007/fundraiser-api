@@ -47,7 +47,7 @@ const fundFundRaise = async ({
         message: "Fundraise ended.",
       },
       {
-        condition: fundRaise.currentAmount >= fundRaise.goalAmount,
+        condition: fundRaise.statics.totalRaised >= fundRaise.fundMetaData.goalAmount,
         code: 403,
         message: "Fundraise goal already reached.",
       },
@@ -88,7 +88,6 @@ const fundFundRaise = async ({
       walletAddress: paymentReference.address,
       walletInfo: paymentReference.id,
     });
-
 
     return {
       code: 200,
