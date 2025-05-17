@@ -6,22 +6,22 @@ const signupValidation = {
     password: Joi.string().required(),
     profileName: Joi.object().keys({
       firstName: Joi.string().required(),
-      lastName: Joi.string().required()
-    })
-  })
+      lastName: Joi.string().required(),
+    }),
+  }),
 };
 
 const loginvalidatoin = {
   body: Joi.object().keys({
     email: Joi.string().required(),
-    password: Joi.string().required()
-  })
+    password: Joi.string().required(),
+  }),
 };
 
 const otpCodeValidation = {
   body: Joi.object().keys({
-    otpCode: Joi.number().required()
-  })
+    otpCode: Joi.number().required(),
+  }),
 };
 
 const userUpdateValidation = {
@@ -31,21 +31,39 @@ const userUpdateValidation = {
         firstName: Joi.string(),
         lastName: Joi.string(),
         displayName: Joi.string(),
-        phoneNumber: Joi.string()
+        phoneNumber: Joi.string(),
       }),
       avatar: Joi.string(),
       address: Joi.object().keys({
         country: Joi.string(),
         state: Joi.string(),
-        city: Joi.string()
-      })
+        city: Joi.string(),
+      }),
     })
-    .min(1)
+    .min(1),
+};
+
+const adminSignupValidation = {
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required(),
+    name: Joi.string().required(),
+    role: Joi.string().valid("admin", "superAdmin", "admin").required(),
+  }),
+};
+
+const adminLoginController = {
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required(),
+  }),
 };
 
 module.exports = {
   signupValidation,
   loginvalidatoin,
   otpCodeValidation,
-  userUpdateValidation
+  userUpdateValidation,
+  adminLoginController,
+  adminSignupValidation
 };
