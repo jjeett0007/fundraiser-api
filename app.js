@@ -19,6 +19,7 @@ global.httpStatus = require("http-status");
 
 const config = require("./config/index");
 const routes = require("./route/v1/index");
+const adminRoutes = require("./route/admin/index");
 
 require("./lib/firebase");
 require("./lib/smtp");
@@ -74,5 +75,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/v1", routes);
+app.use("/admin", adminRoutes);
 
 module.exports = app;

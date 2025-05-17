@@ -44,15 +44,9 @@ const userMadePayment = async ({ donateId }) => {
     // Extract tokenAmount from tokensFound
     const tokenAmount = tokensFound.data.account.data.parsed.info.tokenAmount;
 
-    console.log(tokenAmount);
-
-    console.log("New main amount:", getDonateInfo.currentAmount);
-
     // Convert amount string to number and adjust for decimals
     const newCurrentAmount =
       Number(getDonateInfo.currentAmount) + Number(tokenAmount.uiAmount);
-
-    console.log("New current amount:", tokenAmount.uiAmount);
 
     if (tokenAmount.uiAmount === 0) {
       return {
