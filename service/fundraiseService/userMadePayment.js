@@ -48,6 +48,8 @@ const userMadePayment = async ({ donateId }) => {
     const newCurrentAmount =
       Number(getDonateInfo.currentAmount) + Number(tokenAmount.uiAmount);
 
+    console.log(newCurrentAmount);
+
     if (tokenAmount.uiAmount === 0) {
       return {
         code: 404,
@@ -86,7 +88,26 @@ const userMadePayment = async ({ donateId }) => {
             },
           }
         ),
+        await FundRaise.findByIdAndUpdate(
+          _id,
+          {
+            $inc: {
+              "statics.totalRaised": tokenAmount.uiAmount,
+              "statics.totalDonor":
+                newCurrentAmount >= getDonateInfo.amount ? 1 : 0,
+            },
+            $set: {
+              "statics.lastPaymentTime": new Date(),
+            },
+            $max: {
+              "statics.largestAmount": tokenAmount.uiAmount,
+            },
+          },
+          { new: true }
+        ),
       ]);
+
+      console.log("Payment updated");
     });
 
     if (newCurrentAmount < getDonateInfo.amount) {
@@ -97,23 +118,6 @@ const userMadePayment = async ({ donateId }) => {
         } USDC to complete your donation. Thank you`,
       };
     }
-
-    await FundRaise.findByIdAndUpdate(
-      _id,
-      {
-        $inc: {
-          "statics.totalRaised": tokenAmount.uiAmount,
-          "statics.totalDonor": 1,
-        },
-        $set: {
-          "statics.lastPaymentTime": new Date(),
-        },
-        $max: {
-          "statics.largestAmount": tokenAmount.uiAmount,
-        },
-      },
-      { new: true }
-    );
 
     return {
       code: 200,
