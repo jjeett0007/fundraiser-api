@@ -57,16 +57,17 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
     }
 
     const { contract, fundMetaData, statics } = fundRaise;
-    console.log({ contract, fundMetaData, statics });
+    // console.log({ contract, fundMetaData, statics });
 
-    const sendTokenToContract = await transferToken({
-      sourceKey: contract.privateKey,
-      destinationAddress: fundMetaData.walletAddress,
-      amount: statics.totalRaised,
+    process.nextTick(async () => {
+      const sendTokenToContract = await transferToken({
+        sourceKey: contract.privateKey,
+        destinationAddress: fundMetaData.walletAddress,
+        amount: statics.totalRaised,
+      });
+
+      console.log(sendTokenToContract);
     });
-
-    console.log(sendTokenToContract);
-
 
     await FundRaise.findByIdAndUpdate(
       fundraiseId,
@@ -91,5 +92,4 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
   }
 };
 
-
-module.exports = withdrawFundRaised
+module.exports = withdrawFundRaised;

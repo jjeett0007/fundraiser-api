@@ -55,34 +55,39 @@ const userMadePayment = async ({ donateId }) => {
       };
     }
 
-    const sendTokenToContract = await transferToken({
-      sourceKey: privateKey,
-      destinationAddress: contractAddress,
-      amount: tokenAmount.uiAmount,
+    process.nextTick(async () => {
+      const sendTokenToContract = await transferToken({
+        sourceKey: privateKey,
+        destinationAddress: contractAddress,
+        amount: tokenAmount.uiAmount,
+      });
+
+      console.log(sendTokenToContract);
     });
 
-    console.log(sendTokenToContract);
-
-    await FundRaiseDonor.findByIdAndUpdate(
-      donateId,
-      {
-        $set: {
-          currentAmount: newCurrentAmount,
-          isFundPaid: newCurrentAmount >= getDonateInfo.amount,
-          blockTime: new Date(),
-        },
-      },
-      { new: true }
-    );
-
-    await WalletAddress.findOneAndUpdate(
-      { walletAddress: walletAddress },
-      {
-        $inc: {
-          "balance.usdcBalance": tokenAmount.uiAmount,
-        },
-      }
-    );
+    setImmediate(async () => {
+      await Promise.all([
+        FundRaiseDonor.findByIdAndUpdate(
+          donateId,
+          {
+            $set: {
+              currentAmount: newCurrentAmount,
+              isFundPaid: newCurrentAmount >= getDonateInfo.amount,
+              blockTime: new Date(),
+            },
+          },
+          { new: true }
+        ),
+        await WalletAddress.findOneAndUpdate(
+          { walletAddress: walletAddress },
+          {
+            $inc: {
+              "balance.usdcBalance": tokenAmount.uiAmount,
+            },
+          }
+        ),
+      ]);
+    });
 
     if (newCurrentAmount < getDonateInfo.amount) {
       return {
