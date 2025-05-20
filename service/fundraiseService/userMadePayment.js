@@ -5,8 +5,10 @@ const {
 } = require("../../model/index");
 const { getATokenAccounts } = require("../../lib/getTokenAccounts");
 const { transferToken } = require("../../lib/solana-block-service");
-const { donationUserMail, donationCreatorNotify } = require("../mailerService/index");
-
+const {
+  donationUserMail,
+  donationCreatorNotify,
+} = require("../mailerService/index");
 
 const userMadePayment = async ({ donateId }) => {
   try {
@@ -18,7 +20,7 @@ const userMadePayment = async ({ donateId }) => {
       .populate({
         path: "fundRaiseId",
         select: "_id contractAddress createdBy fundMetaData statics",
-        populate: { path: "createdBy", select: "email profile" }
+        populate: { path: "createdBy", select: "email profile" },
       });
 
     if (!getDonateInfo) {
@@ -45,7 +47,8 @@ const userMadePayment = async ({ donateId }) => {
     }
 
     const { privateKey, walletAddress } = getDonateInfo.walletInfo;
-    const { _id, contractAddress, fundMetaData, createdBy, statics } = getDonateInfo.fundRaiseId;
+    const { _id, contractAddress, fundMetaData, createdBy, statics } =
+      getDonateInfo.fundRaiseId;
 
     // Extract tokenAmount from tokensFound
     const tokenAmount = tokensFound.data.account.data.parsed.info.tokenAmount;
@@ -70,53 +73,49 @@ const userMadePayment = async ({ donateId }) => {
         amount: tokenAmount.uiAmount,
       });
 
-      const { success, data } = sendTokenToContract
+      const { success, data } = sendTokenToContract;
 
       if (success === true) {
-        const newDate = new Date()
+        const newDate = new Date();
 
-        const percentage = ((newCurrentAmount + statics.totalRaised) / fundMetaData.goalAmount) * 100;
+        const percentage =
+          ((newCurrentAmount + statics.totalRaised) / fundMetaData.goalAmount) *
+          100;
 
         await Promise.all([
-          FundRaiseDonor.findByIdAndUpdate(
-            donateId,
-            {
-              $set: {
-                currentAmount: newCurrentAmount,
-                isFundPaid: newCurrentAmount >= getDonateInfo.amount,
-                blockTime: newDate,
-              },
-              $push: {
-                signature: data.signature
-              }
+          FundRaiseDonor.findByIdAndUpdate(donateId, {
+            $set: {
+              currentAmount: newCurrentAmount,
+              isFundPaid: newCurrentAmount >= getDonateInfo.amount,
+              blockTime: newDate,
             },
-            { new: true }
-          ),
-          WalletAddress.findOneAndUpdate(
-            { walletAddress: walletAddress },
+            $push: {
+              signature: data.signature,
+            },
+          }),
+          WalletAddress.updateOne(
+            { walletAddress },
             {
-              $inc: {
-                "balance.usdcBalance": tokenAmount.uiAmount,
-              },
+              $inc: { "balance.usdcBalance": tokenAmount.uiAmount },
             }
           ),
-          FundRaise.findByIdAndUpdate(
-            _id,
-            {
-              $inc: {
-                "statics.totalRaised": tokenAmount.uiAmount,
-                "statics.totalDonor":
-                  newCurrentAmount >= getDonateInfo.amount ? 1 : 0,
-              },
-              $set: {
-                "statics.lastPaymentTime": newDate,
-              },
-              $max: {
-                "statics.largestAmount": tokenAmount.uiAmount,
-              },
+          FundRaise.findByIdAndUpdate(_id, {
+            $inc: {
+              "statics.totalRaised": tokenAmount.uiAmount,
+              "statics.totalDonor":
+                newCurrentAmount >= getDonateInfo.amount ? 1 : 0,
             },
-            { new: true }
-          ),
+            $set: {
+              "statics.lastPaymentTime": newDate,
+              isFundRaiseFundedCompletely: percentage >= 100,
+              isFundRaisedStopped: percentage >= 100,
+              isFundRaiseActive: percentage >= 100 ? false : true,
+              isFundRaisedEndDate: percentage >= 100 ? new Date() : null,
+            },
+            $max: {
+              "statics.largestAmount": tokenAmount.uiAmount,
+            },
+          }),
           donationUserMail({
             email: getDonateInfo.email,
             name: getDonateInfo.name,
@@ -124,7 +123,7 @@ const userMadePayment = async ({ donateId }) => {
             signature: data.signature,
             amount: newCurrentAmount,
             title: fundMetaData.title,
-            link: data.explorerLink
+            link: data.explorerLink,
           }),
           donationCreatorNotify({
             email: createdBy.email,
@@ -135,21 +134,21 @@ const userMadePayment = async ({ donateId }) => {
             amount: newCurrentAmount,
             currentAmount: newCurrentAmount + statics.totalRaised,
             goalAmount: fundMetaData.goalAmount,
-            percentage: percentage,
+            percentage,
             title: fundMetaData.title,
-          })
+          }),
         ]);
       }
 
-      console.log("process complete")
+      console.log("process complete");
     });
-
 
     if (newCurrentAmount < getDonateInfo.amount) {
       return {
         code: 403,
-        message: `Payment detected, but incomplete amount, send ${getDonateInfo.amount - newCurrentAmount
-          } USDC to complete your donation. Thank you`,
+        message: `Payment detected, but incomplete amount, send ${
+          getDonateInfo.amount - newCurrentAmount
+        } USDC to complete your donation. Thank you`,
       };
     }
 
