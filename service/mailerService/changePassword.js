@@ -2,56 +2,59 @@ const { sendEmail } = require("../../lib/smtp");
 const config = require("../../config/index");
 
 const changePassword = async (data) => {
-  const { email, token } = data;
+    const { email, token } = data;
 
-  const subject = "Reset Password link";
+    const subject = "Reset Password link";
 
-  const link = `${config.protocol.frontend_origin}/reset-password?${token}`;
+    const link = `${config.protocol.frontend_origin}/reset-password?${token}`;
 
-  const html = `
+    const html = `
    <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Reset Request</title>
-    <style type="text/css">
-        /* Reset styles */
-        body, p, h1, h2, h3, h4, h5, h6 {
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #0F1A2C;
-            background-color: #F5ECD9;
-        }
-        /* Responsive container */
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #FFFFFF;
-        }
-        /* Media query for mobile devices */
-        @media only screen and (max-width: 480px) {
+    <head>
+        <meta charset="UTF-8">
+        <title>Change Password</title>
+        <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+        <style type="text/css">
+            body, p, h1, h2, h3, h4, h5, h6, td, a {
+                margin: 0;
+                padding: 0;
+                font-family: 'Baloo 2', cursive;
+                color: #0F1A2C;
+            }
+
+            body {
+                line-height: 1.6;
+                background-color: #F5ECD9;
+            }
+
             .container {
-                width: 100% !important;
-                padding: 10px !important;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #FFFFFF;
             }
-            .logo {
-                width: 80% !important;
-                height: auto !important;
+
+            @media only screen and (max-width: 480px) {
+                .container {
+                    width: 100% !important;
+                    padding: 10px !important;
+                }
+                .logo {
+                    width: 80% !important;
+                    height: auto !important;
+                }
+                .button {
+                    width: 100% !important;
+                    text-align: center !important;
+                }
+                .withdrawal-table {
+                    width: 100% !important;
+                }
             }
-            .button {
-                width: 100% !important;
-                text-align: center !important;
-            }
-        }
-    </style>
-</head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #0F1A2C; background-color: #F5ECD9;">
+        </style>
+    </head>
+<body style="margin: 0; padding: 0; font-family: 'Baloo 2', cursive; line-height: 1.6; background-color: #F5ECD9;">
     <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #FFFFFF;">
         <!-- Header -->
         <div style="text-align: center; padding: 20px 0;">
@@ -96,7 +99,7 @@ const changePassword = async (data) => {
 </html>
   `;
 
-  await sendEmail(email, subject, html);
+    await sendEmail(email, subject, html);
 };
 
 module.exports = changePassword;

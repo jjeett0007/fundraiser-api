@@ -1,4 +1,6 @@
 const { FundRaise, User } = require("../../model/index");
+const { fundRaiseCreated } = require("../mailerService/index");
+
 
 const createFundRaise = async ({
   title,
@@ -33,15 +35,26 @@ const createFundRaise = async ({
       createdBy: id,
     });
 
-    await Promise.all([
-      User.findByIdAndUpdate(id, {
-        $inc: { "statics.totalFundRaiseCreated": 1 },
-      }),
-    ]);
+    
 
-    // process.nextTick(() => {
 
-    // });
+    process.nextTick(async () => {
+      const userget = await User.findById(id).select("email profile")
+      const newDate = new Date()
+
+      await Promise.all([
+        User.findByIdAndUpdate(id, {
+          $inc: { "statics.totalFundRaiseCreated": 1 },
+        }),
+        fundRaiseCreated({
+          email: userget.email,
+          name: `${userget.profile.firstName} ${userget.profile.lastName}`,
+          title: title,
+          date: newDate
+        })
+      ])
+
+    });
 
     return {
       code: 200,

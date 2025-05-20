@@ -3,7 +3,7 @@ const { sendEmail } = require("../../lib/smtp");
 const fundRaiseCreated = async (data) => {
   const { email, name, date, device, location } = data;
 
-  const subject = "Password Reset Successful";
+  const subject = "New Fund Raise Created";
 
   const html = `
    <!DOCTYPE html>
@@ -11,7 +11,7 @@ const fundRaiseCreated = async (data) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Reset Successful</title>
+    <title>New Fund Raise Created</title>
     <style type="text/css">
         /* Reset styles */
         body, p, h1, h2, h3, h4, h5, h6 {

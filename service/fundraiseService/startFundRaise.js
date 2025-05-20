@@ -1,9 +1,11 @@
 const { FundRaise } = require("../../model/index");
 const { generateAddress } = require("../generate/generate");
+const { fundraiseLive } = require("../mailerService/index");
 
 const startFundRaise = async ({ id, fundraiseId }) => {
   try {
-    const fundRaise = await FundRaise.findById(fundraiseId);
+    const fundRaise = await FundRaise.findById(fundraiseId)
+      .populate("createdBy", "email profile _id");
 
     if (!fundRaise) {
       return {
@@ -19,7 +21,7 @@ const startFundRaise = async ({ id, fundraiseId }) => {
         message: "Fundraise not found.",
       },
       {
-        condition: fundRaise.createdBy.toString() !== id,
+        condition: fundRaise.createdBy._id.toString() !== id,
         code: 403,
         message: "Unauthorized.",
       },
@@ -63,22 +65,45 @@ const startFundRaise = async ({ id, fundraiseId }) => {
       return { code: error.code, message: error.message };
     }
 
-    const getContractAddress = await generateAddress("contract");
+    const { createdBy } = fundRaise;
 
-    await FundRaise.findByIdAndUpdate(
-      fundraiseId,
-      {
-        contract: getContractAddress.id,
-        contractAddress: getContractAddress.address,
-        isInitialized: true,
-        isFundRaiseStarted: true,
-        isFundRaiseEnded: false,
-        isFundRaiseActive: true,
-        isFundRaiseFundsComplete: false,
-        isFundRaisedStartedDate: new Date(),
-      },
-      { new: true }
-    );
+
+    process.nextTick(async () => {
+      const newDate = new Date()
+
+      const getContractAddress = await generateAddress("contract");
+      console.log({
+        createdBy
+      })
+
+      await Promise.all([
+        FundRaise.findByIdAndUpdate(
+          fundraiseId,
+          {
+            contract: getContractAddress.id,
+            contractAddress: getContractAddress.address,
+            isInitialized: true,
+            isFundRaiseStarted: true,
+            isFundRaiseEnded: false,
+            isFundRaiseActive: true,
+            isFundRaiseFundsComplete: false,
+            isFundRaisedStartedDate: new Date(),
+          },
+          { new: true }
+        ),
+
+        fundraiseLive({
+          email: createdBy.email,
+          name: `${createdBy.profile.firstName} ${createdBy.profile.lastName}`,
+          date: newDate,
+          title: fundRaise.fundMetaData.title,
+          goalAmount: fundRaise.fundMetaData.goalAmount,
+          fundraiseId: fundRaise._id.toString()
+        })
+      ])
+    })
+
+
 
     return { code: 200, message: "Fundraise started." };
   } catch (error) {

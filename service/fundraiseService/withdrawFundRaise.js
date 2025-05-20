@@ -1,12 +1,12 @@
-const { FundRaise } = require("../../model/index");
+const { FundRaise, User } = require("../../model/index");
 const { transferToken } = require("../../lib/solana-block-service");
+const { fundraiseWithdrawalMail } = require("../mailerService/index");
 
 const withdrawFundRaised = async ({ id, fundraiseId }) => {
   try {
-    const fundRaise = await FundRaise.findById(fundraiseId).populate(
-      "contract",
-      "privateKey walletAddress"
-    );
+    const fundRaise = await FundRaise.findById(fundraiseId)
+      .populate("contract", "privateKey walletAddress")
+      .populate("createdBy", "email profile _id");
 
     if (!fundRaise) {
       return {
@@ -17,7 +17,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
 
     const errorChecks = [
       {
-        condition: fundRaise.createdBy.toString() !== id,
+        condition: fundRaise.createdBy._id.toString() !== id,
         code: 403,
         message: "Unauthorized.",
       },
@@ -56,7 +56,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
       return { code: error.code, message: error.message };
     }
 
-    const { contract, fundMetaData, statics } = fundRaise;
+    const { contract, fundMetaData, statics, createdBy } = fundRaise;
     // console.log({ contract, fundMetaData, statics });
 
     process.nextTick(async () => {
@@ -66,22 +66,44 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
         amount: statics.totalRaised,
       });
 
-      console.log(sendTokenToContract);
+      const { success, data } = sendTokenToContract
+
+      if (success === true) {
+        const newDate = new Date()
+
+        await Promise.all([
+          FundRaise.findByIdAndUpdate(
+            fundraiseId,
+            {
+              isFundRaiseEnded: true,
+              isFundRaiseActive: false,
+              isFundRaisedEndDate: newDate,
+              isFundRaiseFunded: true,
+              isFundRaisedStopped: true,
+              isFundRaiseFundsComplete: true,
+              isFundRaiseFundedCompletely: true,
+              signature: data.signature,
+              fundraiseWithdrawLink: data.explorerLink
+            },
+            { new: true }
+          ),
+          User.findByIdAndUpdate(createdBy._id.toString(), {
+            $inc: { "statics.totalFundRaiseCreated": statics.totalRaised },
+          }),
+          fundraiseWithdrawalMail({
+            email: createdBy.email,
+            name: `${createdBy.profile.firstName} ${createdBy.profile.lastName}`,
+            date: newDate,
+            amount: statics.totalRaised,
+            signature: data.signature,
+            link: data.explorerLink
+          })
+        ])
+      }
+
+      console.log("complete process")
     });
 
-    await FundRaise.findByIdAndUpdate(
-      fundraiseId,
-      {
-        isFundRaiseEnded: true,
-        isFundRaiseActive: false,
-        isFundRaisedEndDate: new Date(),
-        isFundRaiseFunded: true,
-        isFundRaisedStopped: true,
-        isFundRaiseFundsComplete: true,
-        isFundRaiseFundedCompletely: true,
-      },
-      { new: true }
-    );
 
     return {
       code: 200,

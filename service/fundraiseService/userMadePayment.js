@@ -5,15 +5,21 @@ const {
 } = require("../../model/index");
 const { getATokenAccounts } = require("../../lib/getTokenAccounts");
 const { transferToken } = require("../../lib/solana-block-service");
+const { donationUserMail, donationCreatorNotify } = require("../mailerService/index");
+
 
 const userMadePayment = async ({ donateId }) => {
   try {
     const getDonateInfo = await FundRaiseDonor.findById(donateId)
       .select(
-        "_id name email note anonymous fundRaiseId, walletAddress amount isFundPaid currentAmount"
+        "_id name email note anonymous fundRaiseId walletAddress amount isFundPaid currentAmount walletInfo"
       )
       .populate("walletInfo", "privateKey walletAddress")
-      .populate("fundRaiseId", "_id contractAddress");
+      .populate({
+        path: "fundRaiseId",
+        select: "_id contractAddress createdBy fundMetaData statics",
+        populate: { path: "createdBy", select: "email profile" }
+      });
 
     if (!getDonateInfo) {
       return {
@@ -39,7 +45,7 @@ const userMadePayment = async ({ donateId }) => {
     }
 
     const { privateKey, walletAddress } = getDonateInfo.walletInfo;
-    const { _id, contractAddress } = getDonateInfo.fundRaiseId;
+    const { _id, contractAddress, fundMetaData, createdBy, statics } = getDonateInfo.fundRaiseId;
 
     // Extract tokenAmount from tokensFound
     const tokenAmount = tokensFound.data.account.data.parsed.info.tokenAmount;
@@ -64,58 +70,86 @@ const userMadePayment = async ({ donateId }) => {
         amount: tokenAmount.uiAmount,
       });
 
-      console.log(sendTokenToContract);
+      const { success, data } = sendTokenToContract
+
+      if (success === true) {
+        const newDate = new Date()
+
+        const percentage = ((newCurrentAmount + statics.totalRaised) / fundMetaData.goalAmount) * 100;
+
+        await Promise.all([
+          FundRaiseDonor.findByIdAndUpdate(
+            donateId,
+            {
+              $set: {
+                currentAmount: newCurrentAmount,
+                isFundPaid: newCurrentAmount >= getDonateInfo.amount,
+                blockTime: newDate,
+              },
+              $push: {
+                signature: data.signature
+              }
+            },
+            { new: true }
+          ),
+          WalletAddress.findOneAndUpdate(
+            { walletAddress: walletAddress },
+            {
+              $inc: {
+                "balance.usdcBalance": tokenAmount.uiAmount,
+              },
+            }
+          ),
+          FundRaise.findByIdAndUpdate(
+            _id,
+            {
+              $inc: {
+                "statics.totalRaised": tokenAmount.uiAmount,
+                "statics.totalDonor":
+                  newCurrentAmount >= getDonateInfo.amount ? 1 : 0,
+              },
+              $set: {
+                "statics.lastPaymentTime": newDate,
+              },
+              $max: {
+                "statics.largestAmount": tokenAmount.uiAmount,
+              },
+            },
+            { new: true }
+          ),
+          donationUserMail({
+            email: getDonateInfo.email,
+            name: getDonateInfo.name,
+            date: newDate,
+            signature: data.signature,
+            amount: newCurrentAmount,
+            title: fundMetaData.title,
+            link: data.explorerLink
+          }),
+          donationCreatorNotify({
+            email: createdBy.email,
+            name: `${createdBy.profile.firstName} ${createdBy.profile.lastName}`,
+            message: getDonateInfo.note,
+            donorName: getDonateInfo.name,
+            date: newDate,
+            amount: newCurrentAmount,
+            currentAmount: newCurrentAmount + statics.totalRaised,
+            goalAmount: fundMetaData.goalAmount,
+            percentage: percentage,
+            title: fundMetaData.title,
+          })
+        ]);
+      }
+
+      console.log("process complete")
     });
 
-    setImmediate(async () => {
-      await Promise.all([
-        FundRaiseDonor.findByIdAndUpdate(
-          donateId,
-          {
-            $set: {
-              currentAmount: newCurrentAmount,
-              isFundPaid: newCurrentAmount >= getDonateInfo.amount,
-              blockTime: new Date(),
-            },
-          },
-          { new: true }
-        ),
-        await WalletAddress.findOneAndUpdate(
-          { walletAddress: walletAddress },
-          {
-            $inc: {
-              "balance.usdcBalance": tokenAmount.uiAmount,
-            },
-          }
-        ),
-        await FundRaise.findByIdAndUpdate(
-          _id,
-          {
-            $inc: {
-              "statics.totalRaised": tokenAmount.uiAmount,
-              "statics.totalDonor":
-                newCurrentAmount >= getDonateInfo.amount ? 1 : 0,
-            },
-            $set: {
-              "statics.lastPaymentTime": new Date(),
-            },
-            $max: {
-              "statics.largestAmount": tokenAmount.uiAmount,
-            },
-          },
-          { new: true }
-        ),
-      ]);
-
-      console.log("Payment updated");
-    });
 
     if (newCurrentAmount < getDonateInfo.amount) {
       return {
         code: 403,
-        message: `Payment detected, but incomplete amount, send ${
-          getDonateInfo.amount - newCurrentAmount
-        } USDC to complete your donation. Thank you`,
+        message: `Payment detected, but incomplete amount, send ${getDonateInfo.amount - newCurrentAmount
+          } USDC to complete your donation. Thank you`,
       };
     }
 
