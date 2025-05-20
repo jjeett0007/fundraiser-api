@@ -6,14 +6,18 @@ const isAdminAuthenticated = require("../../middleware/verifyAdminToken");
 const {
   getAdminController,
   getAllAdminController,
+  updateAdminController,
 } = require("../../controllerAdmin/authAdmin/index");
 
-const {
-  adminLoginController,
-  adminSignupValidation,
-} = require("../../validation/authValid");
+const { userUpdateValidation } = require("../../validation/authValid");
 
 router.get("/view", isAdminAuthenticated, getAdminController);
 router.get("/all", isAdminAuthenticated, getAllAdminController);
+router.patch(
+  "/update",
+  isAdminAuthenticated,
+  validate(userUpdateValidation),
+  updateAdminController
+);
 
 module.exports = router;
