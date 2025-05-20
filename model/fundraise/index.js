@@ -219,6 +219,16 @@ const fundRaiseDb = new mongoose.Schema(
     isFundRaiseDeactivated: {
       type: Boolean,
       default: false
+    },
+
+    signature: {
+      type: String,
+      default: null
+    },
+
+    fundraiseWithdrawLink: {
+      type: String,
+      default: null
     }
   },
   { timestamps: true }
