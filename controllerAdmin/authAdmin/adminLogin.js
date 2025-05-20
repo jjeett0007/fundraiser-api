@@ -10,6 +10,7 @@ const loginAdminController = catchAsync(async (req, res) => {
 
     handleResponse(res, code, message, data);
   } catch (error) {
+    console.log(error);
     handleResponse(
       res,
       500,

@@ -3,7 +3,7 @@ const { Admin } = require("../../model/index");
 async function getAdminById(adminId) {
   try {
     const admin = await Admin.findById(adminId).select(
-      "role lastLogin profile email _id"
+      "role lastLogin profile email _id image"
     );
     return {
       code: 200,

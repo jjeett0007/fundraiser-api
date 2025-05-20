@@ -1,4 +1,4 @@
-const createAdmin = require("../../service/admin/loginAdmin");
+const createAdmin = require("../../service/admin/createAdmin");
 
 const createAdminController = catchAsync(async (req, res) => {
   const { email, password, name, role } = req.body;
@@ -12,6 +12,7 @@ const createAdminController = catchAsync(async (req, res) => {
 
     handleResponse(res, code, message, data);
   } catch (error) {
+    console.log(error)
     handleResponse(
       res,
       500,

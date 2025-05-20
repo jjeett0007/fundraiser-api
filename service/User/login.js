@@ -21,6 +21,9 @@ const loginUser = async ({ email, password }) => {
       return { code: 406, message: "Incorrect Password" };
     }
 
+    user.lastLogin = new Date();
+    await user.save();
+
     const token = await generateToken({
       id: user._id.toString(),
       email: user.email,
