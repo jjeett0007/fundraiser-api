@@ -47,7 +47,8 @@ const fundFundRaise = async ({
         message: "Fundraise ended.",
       },
       {
-        condition: fundRaise.statics.totalRaised >= fundRaise.fundMetaData.goalAmount,
+        condition:
+          fundRaise.statics.totalRaised >= fundRaise.fundMetaData.goalAmount,
         code: 403,
         message: "Fundraise goal already reached.",
       },
@@ -75,8 +76,10 @@ const fundFundRaise = async ({
     }
 
     const paymentReference = await generateAddress("payment");
-    // const adding = await addAddressToWebhook(paymentReference.address);
-    // console.log(adding);
+
+    process.nextTick(async () => {
+      await addAddressToWebhook(paymentReference.address);
+    });
 
     const getFundData = await FundRaiseDonor.create({
       name,

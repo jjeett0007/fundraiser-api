@@ -60,10 +60,20 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
     // console.log({ contract, fundMetaData, statics });
 
     process.nextTick(async () => {
+
+      const fundPayout94Percent = statics.totalRaised * 0.94;
+      const platformFee1Percent = statics.totalRaised * 0.01;
+      const platformFee5Percent = statics.totalRaised * 0.05;
+
       const sendTokenToContract = await transferToken({
         sourceKey: contract.privateKey,
         destinationAddress: fundMetaData.walletAddress,
-        amount: statics.totalRaised,
+        amount: fundPayout94Percent,
+        destinationAddressTwo: "9oyy3CwguMz5qiybc6pYbGgF9L5T6xLnfVrRg59evnzp",
+        destinationTwoAmount: platformFee1Percent,
+        destinationAddressThree: "8hhWAiUiHzTqtSkMJ4AJz3kowr3GW2cUH3tUz4VJFraq",
+        destinationThreeAmount: platformFee5Percent
+
       });
 
       const { success, data } = sendTokenToContract
@@ -88,7 +98,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
             { new: true }
           ),
           User.findByIdAndUpdate(createdBy._id.toString(), {
-            $inc: { "statics.totalFundRaiseCreated": statics.totalRaised },
+            $inc: { "statics.totalFundReceived": statics.totalRaised },
           }),
           fundraiseWithdrawalMail({
             email: createdBy.email,

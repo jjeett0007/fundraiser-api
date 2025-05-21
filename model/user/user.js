@@ -72,7 +72,10 @@ const fundRaiseData = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    totalFundReceived: {},
+    totalFundReceived: {
+      type: Number,
+      default: 0,
+    },
     totalFundRaisedDonated: {
       type: Number,
       default: 0,
