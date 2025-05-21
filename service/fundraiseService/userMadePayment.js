@@ -78,7 +78,7 @@ const userMadePayment = async ({ donateId }) => {
         destinationTwoAmount: platformFee1Percent,
       });
 
-      console.log(sendTokenToContract);
+      // console.log(sendTokenToContract);
 
       const { success, data } = sendTokenToContract;
 
