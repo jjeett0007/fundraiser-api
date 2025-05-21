@@ -108,7 +108,7 @@ const userMadePayment = async ({ donateId }) => {
           ),
           FundRaise.findByIdAndUpdate(_id, {
             $inc: {
-              "statics.totalRaised": tokenAmount.uiAmount,
+              "statics.totalRaised": fundPayout99Percent,
               "statics.totalDonor":
                 newCurrentAmount >= getDonateInfo.amount ? 1 : 0,
             },
