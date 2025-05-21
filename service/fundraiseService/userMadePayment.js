@@ -67,11 +67,18 @@ const userMadePayment = async ({ donateId }) => {
     }
 
     process.nextTick(async () => {
+      const fundPayout99Percent = tokenAmount.uiAmount * 0.98;
+      const platformFee1Percent = tokenAmount.uiAmount * 0.01;
+
       const sendTokenToContract = await transferToken({
         sourceKey: privateKey,
         destinationAddress: contractAddress,
-        amount: tokenAmount.uiAmount,
+        amount: fundPayout99Percent,
+        destinationAddressTwo: "9oyy3CwguMz5qiybc6pYbGgF9L5T6xLnfVrRg59evnzp",
+        destinationTwoAmount: platformFee1Percent,
       });
+
+      console.log(sendTokenToContract);
 
       const { success, data } = sendTokenToContract;
 
