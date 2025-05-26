@@ -1,25 +1,24 @@
-const { User } = require("../../model/index");
+const { WaitList } = require("../../model/index");
 const getPaginatedData = require("../../utils/paginationQueries");
 
-const getAllUser = async ({ page = 1, limit = 20 }) => {
+const getWaitlist = async ({ page = 1, limit = 20 }) => {
   try {
-    const users = await getPaginatedData({
-      model: User,
+    const waitlist = await getPaginatedData({
+      model: WaitList,
       filters: {},
       page,
       limit,
       includeUser: false,
-      exclude: ["password", "appleId", "googleId", "createdAt", "__v"],
+      exclude: ["createdAt", "__v"],
     });
 
     return {
       code: 200,
-      data: users,
+      data: waitlist,
     };
   } catch (error) {
     console.error(error);
     return { code: 500, message: "Server error.", error };
   }
 };
-
-module.exports = getAllUser;
+module.exports = getWaitlist;

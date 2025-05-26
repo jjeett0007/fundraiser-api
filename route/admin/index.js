@@ -2,6 +2,7 @@ const express = require("express");
 const auth = require("./auth");
 const fundraise = require("./fundraise");
 const adminDb = require("./admin-db")
+const users = require("./users");
 
 const router = express.Router();
 
@@ -17,6 +18,10 @@ const defaultRoutes = [
   {
     path: "/user",
     route: adminDb
+  },
+  {
+    path: "/users",
+    route: users
   }
 ];
 
