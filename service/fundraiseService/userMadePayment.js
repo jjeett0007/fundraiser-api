@@ -73,9 +73,9 @@ const userMadePayment = async ({ donateId }) => {
       const sendTokenToContract = await transferToken({
         sourceKey: privateKey,
         destinationAddress: contractAddress,
-        amount: fundPayout99Percent,
+        amount: parseFloat(fundPayout99Percent.toFixed(2)),
         destinationAddressTwo: "9oyy3CwguMz5qiybc6pYbGgF9L5T6xLnfVrRg59evnzp",
-        destinationTwoAmount: platformFee1Percent,
+        destinationTwoAmount: parseFloat(platformFee1Percent.toFixed(2)),
       });
 
       // console.log(sendTokenToContract);

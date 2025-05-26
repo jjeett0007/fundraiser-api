@@ -60,26 +60,24 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
     // console.log({ contract, fundMetaData, statics });
 
     process.nextTick(async () => {
-
       const fundPayout94Percent = statics.totalRaised * 0.94;
-      const platformFee1Percent = statics.totalRaised * 0.01;
+      const platformFee1Percent = statics.totalRaised * 0.008;
       const platformFee5Percent = statics.totalRaised * 0.05;
 
       const sendTokenToContract = await transferToken({
         sourceKey: contract.privateKey,
         destinationAddress: fundMetaData.walletAddress,
-        amount: fundPayout94Percent,
+        amount: parseFloat(fundPayout94Percent.toFixed(2)),
         destinationAddressTwo: "9oyy3CwguMz5qiybc6pYbGgF9L5T6xLnfVrRg59evnzp",
-        destinationTwoAmount: platformFee1Percent,
+        destinationTwoAmount: parseFloat(platformFee1Percent.toFixed(2)),
         destinationAddressThree: "8hhWAiUiHzTqtSkMJ4AJz3kowr3GW2cUH3tUz4VJFraq",
-        destinationThreeAmount: platformFee5Percent
-
+        destinationThreeAmount: parseFloat(platformFee5Percent.toFixed(2)),
       });
 
-      const { success, data } = sendTokenToContract
+      const { success, data } = sendTokenToContract;
 
       if (success === true) {
-        const newDate = new Date()
+        const newDate = new Date();
 
         await Promise.all([
           FundRaise.findByIdAndUpdate(
@@ -93,7 +91,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
               isFundRaiseFundsComplete: true,
               isFundRaiseFundedCompletely: true,
               signature: data.signature,
-              fundraiseWithdrawLink: data.explorerLink
+              fundraiseWithdrawLink: data.explorerLink,
             },
             { new: true }
           ),
@@ -106,14 +104,13 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
             date: newDate,
             amount: statics.totalRaised,
             signature: data.signature,
-            link: data.explorerLink
-          })
-        ])
+            link: data.explorerLink,
+          }),
+        ]);
       }
 
-      console.log("complete process")
+      console.log("complete process");
     });
-
 
     return {
       code: 200,
