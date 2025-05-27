@@ -175,6 +175,7 @@ const getStatics = async () => {
         {
           $match: {
             isDeleted: false,
+            isFundRaiseStarted: true,
             createdAt: { $ne: null }
           }
         },
