@@ -5,6 +5,6 @@ const isAdminAuthenticated = require("../../middleware/verifyAdminToken");
 
 const { getStaticsController } = require("../../controllerAdmin/statics/index");
 
-router.get("/", isAdminAuthenticated, getStaticsController);
+router.get("/", getStaticsController);
 
 module.exports = router;
