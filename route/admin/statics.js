@@ -3,10 +3,8 @@ const router = express.Router();
 const validate = require("../../middleware/validate");
 const isAdminAuthenticated = require("../../middleware/verifyAdminToken");
 
-const {
-  getAllUserController
-} = require("../../controllerAdmin/userController/index");
+const { getStaticsController } = require("../../controllerAdmin/statics/index");
 
-router.get("/all", isAdminAuthenticated, getAllUserController);
+router.get("/", isAdminAuthenticated, getStaticsController);
 
 module.exports = router;

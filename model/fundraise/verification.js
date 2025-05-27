@@ -6,12 +6,12 @@ const fileType = new mongoose.Schema(
   {
     type: {
       type: String,
-      required: true,
+      required: true
     },
     file: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   { _id: false }
 );
@@ -20,37 +20,37 @@ const userVerificationData = new mongoose.Schema(
   {
     country: {
       type: String,
-      required: true,
+      required: true
     },
     meansOfVerification: {
       type: String,
-      required: true,
+      required: true
     },
     idNumber: {
       type: String,
-      required: true,
+      required: true
     },
     selfie: {
       type: String,
-      required: true,
+      required: true
     },
     livenessVideo: {
       type: String,
-      required: false,
+      required: false
     },
     documentData: {
       frontView: {
         type: String,
-        required: true,
+        required: true
       },
       backView: {
-        type: String,
-      },
+        type: String
+      }
     },
     mobileNumber: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   { _id: false }
 );
@@ -59,34 +59,39 @@ const methodOfValidation = new mongoose.Schema({
   fundraiseData: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "FundRaise",
-    required: true,
+    required: true
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    required: true
   },
   userVerificationData: {
     type: userVerificationData,
-    default: {},
+    default: {}
   },
   proofOfFundRaiseVerify: {
     type: [fileType],
-    required: true,
+    required: true
   },
   isFundRaiseVerified: {
     type: Boolean,
-    default: false,
+    default: false
   },
   isFundRaiseVerifiedDate: {
     type: Date,
-    default: null,
+    default: null
+  },
+  isFundRaiseVerifiedStatus: {
+    type: String,
+    enum: ["approved", "rejected", "pending"],
+    default: null
   },
   isFundRaiseVerifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Admin",
-    default: null,
-  },
+    default: null
+  }
 });
 
 const FundRaiseVerify = mongoose.model("Fundraise-verify", methodOfValidation);

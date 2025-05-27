@@ -9,7 +9,7 @@ const verifyFundRaise = async ({
   selfie,
   documentData,
   mobileNumber,
-  fundRaiseProofs,
+  fundRaiseProofs
 }) => {
   try {
     const fundRaise = await FundRaise.findById(fundraiseId);
@@ -18,28 +18,28 @@ const verifyFundRaise = async ({
       {
         condition: !fundRaise,
         code: 404,
-        message: "Fundraise not found.",
+        message: "Fundraise not found."
       },
       {
         condition: fundRaise.createdBy.toString() !== id,
         code: 403,
-        message: "Unauthorized.",
+        message: "Unauthorized."
       },
       {
         condition: fundRaise.isInitialized,
         code: 400,
-        message: "Fundraise already started.",
+        message: "Fundraise already started."
       },
       {
         condition: fundRaise.verify?.isVerificationInitalized === true,
         code: 403,
-        message: "Under Verification",
+        message: "Under Verification"
       },
       {
         condition: fundRaise.verify.isFundRaiseVerified === true,
         code: 403,
-        message: "Already Verified",
-      },
+        message: "Already Verified"
+      }
     ];
 
     const error = errorChecks.find((check) => check.condition);
@@ -57,24 +57,26 @@ const verifyFundRaise = async ({
         idNumber: idNumber,
         selfie: selfie,
         documentData: documentData,
-        mobileNumber: mobileNumber,
+        mobileNumber: mobileNumber
       },
-      proofOfFundRaiseVerify: fundRaiseProofs,
+      proofOfFundRaiseVerify: fundRaiseProofs
     });
 
     await FundRaise.findByIdAndUpdate(fundraiseId, {
       "verify.verificationId": verificationData._id,
       "verify.isVerificationInitalized": true,
+      "verify.isFundRaiseVerifiedStatus": "pending",
+      "verify.verificationDocumentsDate": new Date()
     });
 
     return {
       code: 200,
-      message: "Verification Data accepted",
+      message: "Verification Data accepted"
     };
   } catch (error) {
     return {
       code: 500,
-      message: "Server error",
+      message: "Server error"
     };
   }
 };

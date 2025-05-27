@@ -59,68 +59,76 @@ const fundMetaDataSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const staticsts = new mongoose.Schema(
+  {
+    totalRaised: {
+      type: Number,
+      default: 0
+    },
+    totalDonor: {
+      type: Number,
+      default: 0
+    },
+    averageDonation: {
+      type: Number,
+      default: 0
+    },
+    largestAmount: {
+      type: Number,
+      default: 0
+    },
+    lastPaymentTime: {
+      type: Date,
+      default: null
+    }
+  },
+  { _id: false }
+);
 
-const staticsts = new mongoose.Schema({
-  totalRaised: {
-    type: Number,
-    default: 0
+const verificationSyntax = new mongoose.Schema(
+  {
+    verificationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Fundraise-verify",
+      default: null
+    },
+    isVerificationInitalized: {
+      type: Boolean,
+      default: false
+    },
+    isFundRaiseVerified: {
+      type: Boolean,
+      default: false
+    },
+    isFundRaiseVerifiedDate: {
+      type: Date,
+      default: null
+    },
+    isFundRaiseVerifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin",
+      default: null
+    },
+    isFundRaiseVerifiedComment: {
+      type: String,
+      default: null
+    },
+    isFundRaiseVerifiedStatus: {
+      type: String,
+      enum: ["approved", "rejected", "pending"],
+      default: null
+    },
+    declinedComment: {
+      type: String,
+      default: null
+    },
+    verificationDocumentsDate: {
+      type: Date,
+      default: null
+    }
   },
-  totalDonor: {
-    type: Number,
-    default: 0
-  },
-  averageDonation: {
-    type: Number,
-    default: 0
-  },
-  largestAmount: {
-    type: Number,
-    default: 0
-  },
-  lastPaymentTime: {
-    type: Date,
-    default: null
-  }
-}, { _id: false })
-
-const verificationSyntax = new mongoose.Schema({
-  verificationId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Fundraise-verify",
-    default: null
-  },
-  isVerificationInitalized: {
-    type: Boolean,
-    default: false
-  },
-  isFundRaiseVerified: {
-    type: Boolean,
-    default: false
-  },
-  isFundRaiseVerifiedDate: {
-    type: Date,
-    default: null
-  },
-  isFundRaiseVerifiedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Admin",
-    default: null
-  },
-  isFundRaiseVerifiedComment: {
-    type: String,
-    default: null
-  },
-  isFundRaiseVerifiedStatus: {
-    type: String,
-    enum: ["approved", "rejected"],
-    default: null
-  },
-  declinedComment: {
-    type: String,
-    default: null
-  }
-}, { _id: false })
-
+  { _id: false }
+);
 
 const fundRaiseDb = new mongoose.Schema(
   {
@@ -214,7 +222,6 @@ const fundRaiseDb = new mongoose.Schema(
       type: Date,
       default: null
     },
-
 
     isFundRaiseDeactivated: {
       type: Boolean,
