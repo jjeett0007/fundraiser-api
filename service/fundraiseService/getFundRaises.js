@@ -35,7 +35,6 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "createdBy",
         "contractAddress",
         "contract",
-        "isFundRaiseActive",
         "isFundRaiseFunded",
         "isFundRaiseDeleted",
         "isFundRaiseFundsComplete",
