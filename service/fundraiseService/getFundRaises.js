@@ -30,7 +30,7 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
       filters: filter,
       page,
       limit: 9,
-      includeUser: true,
+      includeUser: false,
       exclude: [
         "createdBy",
         "contractAddress",

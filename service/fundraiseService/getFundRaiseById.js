@@ -2,9 +2,14 @@ const { FundRaise } = require("../../model/index");
 
 const getFundRaiseDataById = async ({ id }) => {
   try {
-    const fundRaise = await FundRaise.findById(id).select(
-      "fundMetaData isFundRaiseStarted isInitialized isFundRaisedStopped isFundRaiseFundsComplete isFundRaisedStartedDate staticsts verify.isFundRaiseVerified verify.isFundRaiseVerifiedDate statics"
-    );
+    const fundRaise = await FundRaise.findById(id)
+      .populate({
+        path: "createdBy",
+        select: "profile profileImages"
+      })
+      .select(
+        "fundMetaData isFundRaiseStarted isInitialized isFundRaisedStopped isFundRaiseFundsComplete isFundRaisedStartedDate staticsts verify.isFundRaiseVerified verify.isFundRaiseVerifiedDate statics"
+      );
 
     if (!fundRaise) {
       return {
