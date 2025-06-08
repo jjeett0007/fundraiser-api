@@ -82,7 +82,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
         await Promise.all([
           FundRaise.findByIdAndUpdate(
             fundraiseId,
-            {
+            { 
               isFundRaiseEnded: true,
               isFundRaiseActive: false,
               isFundRaisedEndDate: newDate,
