@@ -52,7 +52,7 @@ const fundRaiseCreated = async (data) => {
     <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #FFFFFF;">
         <!-- Header -->
         <div style="text-align: center; padding: 20px 0;">
-            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Brand%20Assests-13-ERzVmtXuMyicTu1JpkN2vo7h8BEIzU.png" alt="EMERG FUNDS Logo" class="logo" style="max-width: 250px; height: auto;">
+            <img src="https://www.emergfunds.org/logo-red.png" alt="EMERG FUNDS Logo" class="logo" style="max-width: 250px; height: auto;">
         </div>
         
         <!-- Main Content -->
