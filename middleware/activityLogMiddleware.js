@@ -7,16 +7,12 @@ const activityLogger = async (req, res, next) => {
   try {
     let userId;
     const authHeader = req.headers.authorization;
-    console.log("ActivityLogger middleware started");
-    console.log("Request Headers:", req.ip);
 
     if (authHeader) {
       const token = authHeader.split(" ")[1];
       const decoded = jwt.verify(token, jwtSecret);
       userId = decoded.id;
     }
-
-    console.log(userId);
 
     const logData = {
       userId: userId || undefined,

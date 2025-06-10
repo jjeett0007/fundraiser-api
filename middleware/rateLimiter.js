@@ -1,5 +1,5 @@
-const ms = require("ms"); // for easy time parsing, install with `npm install ms`
-const { RateLimit } = require("../model"); // Adjust the path as necessary
+const ms = require("ms");
+const { RateLimit } = require("../model");
 /**
  * Advanced sliding window rate limiter middleware factory.
  * @param {Object} options
@@ -45,8 +45,6 @@ function advancedRateLimiter({
         return next();
       }
 
-      console.log(`Rate limit record found for key: ${key}`);
-
       // Filter timestamps inside window
       record.timestamps = record.timestamps.filter((ts) => ts > now - windowMs);
 
@@ -65,8 +63,6 @@ function advancedRateLimiter({
       // Add current timestamp and save
       record.timestamps.push(now);
       await record.save();
-      console.log(`Updated rate limit record for key: ${key}`);
-      console.log(`New timestamps: ${record.timestamps}`);
 
       // Set rate limit headers
       res.set("X-RateLimit-Limit", max);
@@ -78,9 +74,12 @@ function advancedRateLimiter({
 
       next();
     } catch (err) {
-      console.error("MongoDB rate limiter error:", err);
+      console.error("rate limiter error:", err);
       // Fail open (allow request) if DB error
-      next();
+      return res.status(429).json({
+        message: "Too many requests, please try again later.",
+        retryAfterSeconds: Math.ceil(retryAfterMs / 1000)
+      });
     }
   };
 }
