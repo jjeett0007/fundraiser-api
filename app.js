@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
 const advancedRateLimiter = require("./middleware/rateLimiter");
+const activityLogger = require("./middleware/activityLogMiddleware");
 
 global.router = express.Router();
 global.catchAsync = require("./utils/catchAsync");
@@ -75,6 +76,8 @@ const globalLimiter = advancedRateLimiter({
   max: 100,
   keyGenerator: (req) => req.ip
 });
+
+app.use(activityLogger);
 
 app.use(globalLimiter);
 

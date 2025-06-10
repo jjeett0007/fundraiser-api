@@ -8,6 +8,7 @@ const WalletAddress = require("./Address/index");
 const Admin = require("./Admin/index")
 const FundRaiseVerify = require("./fundraise/verification")
 const RateLimit = require("./rateLimit/index");
+const ActivityLog = require("./activityLog/index");
 
 module.exports = {
   FundRaise,
@@ -19,5 +20,6 @@ module.exports = {
   WalletAddress,
   Admin,
   FundRaiseVerify,
-  RateLimit
+  RateLimit,
+  ActivityLog
 };
