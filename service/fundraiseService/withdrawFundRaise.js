@@ -1,6 +1,9 @@
 const { FundRaise, User } = require("../../model/index");
 const { transferToken } = require("../../lib/solana-block-service");
-const { fundraiseWithdrawalMail } = require("../mailerService/index");
+const {
+  fundraiseWithdrawalMail,
+  withDrawalFailed
+} = require("../mailerService/index");
 
 const withdrawFundRaised = async ({ id, fundraiseId }) => {
   try {
@@ -11,7 +14,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
     if (!fundRaise) {
       return {
         code: 404,
-        message: "Not Found",
+        message: "Not Found"
       };
     }
 
@@ -19,17 +22,17 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
       {
         condition: fundRaise.createdBy._id.toString() !== id,
         code: 403,
-        message: "Unauthorized.",
+        message: "Unauthorized."
       },
       {
         condition: !fundRaise.isFundRaiseStarted,
         code: 400,
-        message: "Fundraise not started.",
+        message: "Fundraise not started."
       },
       {
         condition: fundRaise.isFundRaiseFundsComplete,
         code: 400,
-        message: "Fundraise already completed.",
+        message: "Fundraise already completed."
       },
       // {
       //   condition:
@@ -46,8 +49,8 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
       {
         condition: fundRaise.isFundRaiseEnded,
         code: 400,
-        message: "Fundraise already ended.",
-      },
+        message: "Fundraise already ended."
+      }
     ];
 
     const error = errorChecks.find((check) => check.condition);
@@ -71,10 +74,10 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
         destinationAddressTwo: "9oyy3CwguMz5qiybc6pYbGgF9L5T6xLnfVrRg59evnzp",
         destinationTwoAmount: parseFloat(platformFee1Percent.toFixed(2)),
         destinationAddressThree: "8hhWAiUiHzTqtSkMJ4AJz3kowr3GW2cUH3tUz4VJFraq",
-        destinationThreeAmount: parseFloat(platformFee5Percent.toFixed(2)),
+        destinationThreeAmount: parseFloat(platformFee5Percent.toFixed(2))
       });
 
-      const { success, data } = sendTokenToContract;
+      const { success, typeLabel, data } = sendTokenToContract;
 
       if (success === true) {
         const newDate = new Date();
@@ -82,7 +85,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
         await Promise.all([
           FundRaise.findByIdAndUpdate(
             fundraiseId,
-            { 
+            {
               isFundRaiseEnded: true,
               isFundRaiseActive: false,
               isFundRaisedEndDate: newDate,
@@ -91,12 +94,12 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
               isFundRaiseFundsComplete: true,
               isFundRaiseFundedCompletely: true,
               signature: data.signature,
-              fundraiseWithdrawLink: data.explorerLink,
+              fundraiseWithdrawLink: data.explorerLink
             },
             { new: true }
           ),
           User.findByIdAndUpdate(createdBy._id.toString(), {
-            $inc: { "statics.totalFundReceived": statics.totalRaised },
+            $inc: { "statics.totalFundReceived": statics.totalRaised }
           }),
           fundraiseWithdrawalMail({
             email: createdBy.email,
@@ -104,9 +107,22 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
             date: newDate,
             amount: statics.totalRaised,
             signature: data.signature,
-            link: data.explorerLink,
-          }),
+            link: data.explorerLink
+          })
         ]);
+      }
+
+      if (success === false && typeLabel === "InsufficientBalance") {
+        const newDate = new Date();
+        await withDrawalFailed({
+          email: createdBy.email,
+          name: `${createdBy.profile.firstName} ${createdBy.profile.lastName}`,
+          date: newDate,
+          title: fundMetaData.title,
+          requestBalance: statics.totalRaised,
+          availableBalance: data.sourceBalance,
+          id: fundraiseId
+        });
       }
 
       console.log("complete process");
@@ -114,7 +130,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
 
     return {
       code: 200,
-      message: "withdraw sent to your wallet",
+      message: "withdrawal is in process"
     };
   } catch (error) {
     return error;
