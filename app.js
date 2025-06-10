@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
+const advancedRateLimiter = require("./middleware/rateLimiter");
 
 global.router = express.Router();
 global.catchAsync = require("./utils/catchAsync");
@@ -42,7 +43,6 @@ app.use(
   })
 );
 
-
 if (config.env !== "prod" && config.env !== "test") {
   app.use(
     morgan("combined", {
@@ -69,6 +69,14 @@ app.use((req, res, next) => {
   // console.log(`Headers:`, req.headers);
   next();
 });
+
+const globalLimiter = advancedRateLimiter({
+  window: "15m",
+  max: 100,
+  keyGenerator: (req) => req.ip
+});
+
+app.use(globalLimiter);
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");

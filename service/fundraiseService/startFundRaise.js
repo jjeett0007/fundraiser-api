@@ -72,9 +72,6 @@ const startFundRaise = async ({ id, fundraiseId }) => {
       const newDate = new Date()
 
       const getContractAddress = await generateAddress("contract");
-      console.log({
-        createdBy
-      })
 
       await Promise.all([
         FundRaise.findByIdAndUpdate(

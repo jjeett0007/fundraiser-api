@@ -7,6 +7,7 @@ const WaitList = require("./waitlist/index");
 const WalletAddress = require("./Address/index");
 const Admin = require("./Admin/index")
 const FundRaiseVerify = require("./fundraise/verification")
+const RateLimit = require("./rateLimit/index");
 
 module.exports = {
   FundRaise,
@@ -17,5 +18,6 @@ module.exports = {
   WaitList,
   WalletAddress,
   Admin,
-  FundRaiseVerify
+  FundRaiseVerify,
+  RateLimit
 };
