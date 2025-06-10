@@ -10,6 +10,7 @@ const path = require("path");
 const cors = require("cors");
 const advancedRateLimiter = require("./middleware/rateLimiter");
 const activityLogger = require("./middleware/activityLogMiddleware");
+const blockUserAgents = require("./middleware/blockAgents");
 
 global.router = express.Router();
 global.catchAsync = require("./utils/catchAsync");
@@ -55,6 +56,10 @@ if (config.env !== "prod" && config.env !== "test") {
       }
     })
   );
+}
+
+if (config.env === "prod") {
+  app.use(blockUserAgents);
 }
 
 app.use(passport.initialize());
