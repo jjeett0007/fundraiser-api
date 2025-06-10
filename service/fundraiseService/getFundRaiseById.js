@@ -8,7 +8,7 @@ const getFundRaiseDataById = async ({ id }) => {
         select: "profile profileImages"
       })
       .select(
-        "fundMetaData isFundRaiseStarted isInitialized isFundRaisedStopped isFundRaiseFundsComplete isFundRaiseFundedCompletely isFundRaisedStartedDate staticsts verify.isFundRaiseVerified verify.isFundRaiseVerifiedDate statics"
+        "fundMetaData isFundRaiseStarted isInitialized isFundRaisedStopped isFundRaiseFundsComplete isFundRaiseFundedCompletely isFundRaisedStartedDate staticsts verify.isFundRaiseVerified verify.isFundRaiseVerifiedDate statics signature fundraiseWithdrawLink"
       );
 
     if (!fundRaise) {

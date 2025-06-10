@@ -63,6 +63,8 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "isInitialized",
         "isTotalDonor",
         "reportCount",
+        "signature",
+        "fundraiseWithdrawLink"
       ],
     });
 

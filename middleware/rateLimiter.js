@@ -25,10 +25,6 @@ function advancedRateLimiter({
     const key = keyGenerator(req);
     const now = Date.now();
 
-    console.log(
-      `Rate limiting request from key: ${key} at ${new Date(now).toISOString()}`
-    );
-
     try {
       // Find the document for this key or create if missing
       let record = await RateLimit.findOne({ key });

@@ -8,6 +8,8 @@ const activityLogger = async (req, res, next) => {
     let userId;
     const authHeader = req.headers.authorization;
 
+    console.log("user agent", req.headers["user-agent"])
+
     if (authHeader) {
       const token = authHeader.split(" ")[1];
       const decoded = jwt.verify(token, jwtSecret);
