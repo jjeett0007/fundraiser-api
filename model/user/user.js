@@ -157,30 +157,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// userSchema.post("save", async function (doc) {
-//   console.log("User document saved:");
-//   try {
-//     // Only add contact if this is a new document and has required fields
-//     if (this.isNew && doc.email && doc.profile) {
-// await addContact({
-//   email: doc.email,
-//   firstName: doc.profile.firstName || "",
-//   lastName: doc.profile.lastName || ""
-// });
-//     }
-//   } catch (error) {
-//     console.error("Error adding contact to mailing list:", error);
-//   }
-// });
-
 userSchema.statics.startMonitoring = async function () {
-  console.log(`🎧 Listening for new user creations...`);
-
   const changeStream = this.watch([{ $match: { operationType: "insert" } }]);
 
   changeStream.on("change", async (change) => {
     const newUser = change.fullDocument;
-    console.log(`🔔 New user adding: ${newUser.email}`);
+
     await addContact({
       email: newUser.email,
       firstName: newUser.profile.firstName || "",
