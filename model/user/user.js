@@ -5,17 +5,17 @@ const mongoose = require("mongoose");
 const address = new mongoose.Schema(
   {
     address: {
-      type: String,
+      type: String
     },
     city: {
-      type: String,
+      type: String
     },
     state: {
-      type: String,
+      type: String
     },
     country: {
-      type: String,
-    },
+      type: String
+    }
   },
   { _id: false }
 );
@@ -23,17 +23,17 @@ const address = new mongoose.Schema(
 const userProfile = new mongoose.Schema(
   {
     firstName: {
-      type: String,
+      type: String
     },
     lastName: {
-      type: String,
+      type: String
     },
     displayName: {
-      type: String,
+      type: String
     },
     phoneNumber: {
-      type: String,
-    },
+      type: String
+    }
   },
   { _id: false }
 );
@@ -42,12 +42,12 @@ const userProfileImages = new mongoose.Schema(
   {
     avatar: {
       type: String,
-      default: null,
+      default: null
     },
     backDrop: {
       type: String,
-      default: null,
-    },
+      default: null
+    }
   },
   { _id: false }
 );
@@ -56,12 +56,12 @@ const userStatics = new mongoose.Schema(
   {
     totalRaised: {
       type: Number,
-      default: 0,
+      default: 0
     },
     totalFundRaiseCreated: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   { _id: false }
 );
@@ -70,24 +70,24 @@ const fundRaiseData = new mongoose.Schema(
   {
     totalFundRaisedCreated: {
       type: Number,
-      default: 0,
+      default: 0
     },
     totalFundReceived: {
       type: Number,
-      default: 0,
+      default: 0
     },
     totalFundRaisedDonated: {
       type: Number,
-      default: 0,
+      default: 0
     },
     totalFundRaisedDonors: {
       type: Number,
-      default: 0,
+      default: 0
     },
     totalFundRaisedCreatedByUser: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   { _id: false }
 );
@@ -98,54 +98,58 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: true,
       sparse: true,
-      required: true,
+      required: true
     },
     role: {
       type: String,
-      default: "user",
+      default: "user"
     },
     googleId: {
       type: String,
       unique: true,
-      sparse: true,
+      sparse: true
     },
     appleId: {
       type: String,
       unique: true,
-      sparse: true,
+      sparse: true
     },
     password: {
-      type: String,
+      type: String
     },
     profile: {
       type: userProfile,
-      default: {},
+      default: {}
     },
     profileImages: {
       type: userProfileImages,
-      default: {},
+      default: {}
     },
     statics: {
       type: userStatics,
-      default: {},
+      default: {}
     },
     address: {
       type: address,
-      default: {},
+      default: {}
     },
     fundRaiseData: {
       type: fundRaiseData,
-      default: {},
+      default: {}
     },
     isVerified: { type: Boolean, default: false },
     lastUpdated: {
       type: Date,
-      default: null,
+      default: null
     },
     lastLogin: {
       type: Date,
-      default: null,
+      default: null
     },
+    emailSubscription: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 );

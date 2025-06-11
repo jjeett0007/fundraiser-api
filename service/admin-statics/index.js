@@ -354,6 +354,7 @@ const getStatics = async () => {
         FundRaiseDonor.aggregate([
           {
             $match: {
+               isFundPaid: true,
               createdAt: { $gte: start, $lt: end }
             }
           },
