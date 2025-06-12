@@ -21,4 +21,5 @@ router.patch(
 );
 router.delete("/", isUserAuthenticated, isAccountVerified, destroyUser);
 
+
 module.exports = router;
