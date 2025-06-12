@@ -19,7 +19,7 @@ router.get("/all", isAdminAuthenticated, getAllUserController);
 router.post("/add-to-mail-subs", isAdminAuthenticated, addToMailSubsController);
 router.delete(
   "/delete-many",
-  // isAdminAuthenticated,
+  isAdminAuthenticated,
   validate(deleteManyUsersByMail),
   deleteManyUserController
 );
