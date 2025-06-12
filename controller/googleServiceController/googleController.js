@@ -20,8 +20,6 @@ const success = async ({ email, id, name, displayName, picture }) => {
         data: data
       };
 
-      console.log(resp);
-
       return resp;
     }
 
@@ -34,8 +32,6 @@ const success = async ({ email, id, name, displayName, picture }) => {
         message: "Authenticated",
         data: data
       };
-
-      console.log(resp);
 
       return resp;
     }
