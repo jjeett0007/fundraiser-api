@@ -25,7 +25,7 @@ router.delete(
 );
 router.get(
   "/get-user/:userId",
-  // isAdminAuthenticated,
+  isAdminAuthenticated,
   validate(validateUserId),
   getUser
 );
