@@ -124,6 +124,18 @@ const validateDonationId = {
   })
 };
 
+const validateUserId = {
+  params: Joi.object().keys({
+    userId: Joi.string()
+      .pattern(/^[0-9a-fA-F]{24}$/)
+      .required()
+      .messages({
+        "any.required": "Donation ID is required",
+        "string.pattern.base": "Donation ID must be a valid MongoDB ObjectId"
+      })
+  })
+};
+
 const donationValidation = {
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(100).messages({
@@ -242,5 +254,6 @@ module.exports = {
   validateFundraiserId,
   validateDonationId,
   userInfoValidation,
-  deleteManyUsersByMail
+  deleteManyUsersByMail,
+  validateUserId
 };
