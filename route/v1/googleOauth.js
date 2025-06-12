@@ -37,6 +37,8 @@ router.get(
       picture
     });
 
+    console.log({ code, data, type, message });
+
     if (!code) {
       return res.redirect(
         `http://${

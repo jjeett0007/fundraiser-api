@@ -8,26 +8,36 @@ const failed = (req, res) =>
 const success = async ({ email, id, name, displayName, picture }) => {
   try {
     const info = { email, googleId: id, name, displayName, picture };
-    const create = await createUserAccount(info);
 
-    if (create.code === 200) {
-      return {
+    const { code, message, data } = await createUserAccount(info);
+    // console.log("Create user response:", { code, message, data });
+
+    if (code === 201) {
+      const resp = {
         code: 200,
         type: "signup",
-        message: "Sign up successful",
-        data: create.data
+        message: message || "User created successfully",
+        data: data
       };
+
+      console.log(resp);
+
+      return resp;
     }
 
-    if (create.code === 302) {
+    if (code === 302) {
       const { code, message, data } = await getUserByGoogleId(info);
 
-      return {
+      const resp = {
         code: code,
         type: "login",
         message: "Authenticated",
         data: data
       };
+
+      console.log(resp);
+
+      return resp;
     }
   } catch (error) {
     console.error(error);
