@@ -9,7 +9,7 @@ const getAllUser = async ({ page = 1, limit = 20 }) => {
       page,
       limit,
       includeUser: false,
-      exclude: ["password", "appleId", "googleId", "createdAt", "__v"],
+      exclude: ["password", "appleId", "googleId", "updatedAt", "__v", "fundRaiseData"],
     });
 
     return {
