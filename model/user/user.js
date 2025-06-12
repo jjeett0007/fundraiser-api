@@ -152,6 +152,10 @@ const userSchema = new mongoose.Schema(
     emailSubscription: {
       type: Boolean,
       default: false
+    },
+    isActivated: {
+      type: Boolean,
+      default: true
     }
   },
   { timestamps: true }
