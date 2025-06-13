@@ -27,7 +27,7 @@ const resendOtp = async (userId) => {
     const code = otpCode?.otp || generateConfirmationCode();
 
     if (!otpCode) {
-      const expirationTime = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
+      const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
       await Otp.create({
         email: user.email,
         otp: code,
