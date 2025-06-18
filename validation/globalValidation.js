@@ -244,6 +244,81 @@ const deleteManyUsersByMail = {
   })
 };
 
+const blogValidation = {
+  body: Joi.object().keys({
+    title: Joi.string().required().trim().messages({
+      "any.required": "Title is required",
+      "string.empty": "Title cannot be empty"
+    }),
+    slug: Joi.string().required().trim().messages({
+      "any.required": "Slug is required",
+      "string.empty": "Slug cannot be empty"
+    }),
+    content: Joi.string().allow("").optional(),
+    excerpt: Joi.string().allow("").trim().optional(),
+    featuredImage: Joi.object().keys({
+      file: Joi.string().required(),
+      type: Joi.string().required()
+    }),
+    category: Joi.string().allow("").trim().optional(),
+    tags: Joi.array().items(Joi.string()).default([]),
+    metaDescription: Joi.string().allow("").trim().optional(),
+    keywords: Joi.string().allow("").trim().optional(),
+    status: Joi.string()
+      .valid("published", "draft", "archived")
+      .default("draft"),
+    publishNow: Joi.boolean().default(false),
+    contentJson: Joi.object({
+      root: Joi.object({
+        children: Joi.array().items(
+          Joi.object({
+            children: Joi.array().items(
+              Joi.object({
+                detail: Joi.number(),
+                format: Joi.number(),
+                mode: Joi.string(),
+                style: Joi.string(),
+                text: Joi.string(),
+                type: Joi.string(),
+                version: Joi.number()
+              })
+            ),
+            direction: Joi.string(),
+            format: Joi.string(),
+            indent: Joi.number(),
+            type: Joi.string(),
+            version: Joi.number()
+          })
+        ),
+        direction: Joi.string(),
+        format: Joi.string(),
+        indent: Joi.number(),
+        type: Joi.string(),
+        version: Joi.number()
+      })
+    }).optional(),
+    contentHtml: Joi.string().allow("").optional()
+  })
+};
+
+const blogUpdateValidation = {
+  body: blogValidation.body.fork(["title", "slug"], (schema) =>
+    schema.optional()
+  )
+};
+
+const blogIdValidation = {
+  params: Joi.object().keys({
+    blogId: Joi.string()
+      .pattern(/^[0-9a-fA-F]{24}$/)
+      .required()
+      .messages({
+        "any.required": "Blog ID is required",
+        "string.pattern.base": "Blog ID must be a valid MongoDB ObjectId"
+      })
+  })
+};
+
 module.exports = {
   changePasswordValidation,
   emailOnlyValidation,
@@ -255,5 +330,8 @@ module.exports = {
   validateDonationId,
   userInfoValidation,
   deleteManyUsersByMail,
-  validateUserId
+  validateUserId,
+  blogValidation,
+  blogUpdateValidation,
+  blogIdValidation
 };

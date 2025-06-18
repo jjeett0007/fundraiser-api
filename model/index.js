@@ -5,10 +5,11 @@ const Token = require("./token/index");
 const FundRaiseDonor = require("./fundraise/donor");
 const WaitList = require("./waitlist/index");
 const WalletAddress = require("./Address/index");
-const Admin = require("./Admin/index")
-const FundRaiseVerify = require("./fundraise/verification")
+const Admin = require("./Admin/index");
+const FundRaiseVerify = require("./fundraise/verification");
 const RateLimit = require("./rateLimit/index");
 const ActivityLog = require("./activityLog/index");
+const Blog = require("./blogs/index");
 
 module.exports = {
   FundRaise,
@@ -21,5 +22,6 @@ module.exports = {
   Admin,
   FundRaiseVerify,
   RateLimit,
-  ActivityLog
+  ActivityLog,
+  Blog
 };

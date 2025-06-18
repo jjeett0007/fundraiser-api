@@ -4,6 +4,7 @@ const fundraise = require("./fundraise");
 const adminDb = require("./admin-db");
 const users = require("./users");
 const statics = require("./statics");
+const upload = require("./upload");
 
 const router = express.Router();
 
@@ -27,6 +28,10 @@ const defaultRoutes = [
   {
     path: "/statics",
     route: statics
+  },
+  {
+    path: "/upload",
+    route: upload
   }
 ];
 

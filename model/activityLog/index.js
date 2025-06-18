@@ -7,7 +7,7 @@ const activityLogSchema = new mongoose.Schema({
   url: { type: String, required: true },
   userAgent: { type: String },
   timestamp: { type: Date, default: Date.now },
-  extra: { type: Object }, // optional extra data, e.g. request body summary
+  requestBodies: { type: Object },
 });
 
 const ActivityLog = mongoose.model('ActivityLog', activityLogSchema);

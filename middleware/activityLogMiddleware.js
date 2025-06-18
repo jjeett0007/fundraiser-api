@@ -8,7 +8,7 @@ const activityLogger = async (req, res, next) => {
     let userId;
     const authHeader = req.headers.authorization;
 
-    console.log("user agent", req.headers["user-agent"])
+    console.log("user agent", req.headers["user-agent"]);
 
     if (authHeader) {
       const token = authHeader.split(" ")[1];
@@ -22,7 +22,8 @@ const activityLogger = async (req, res, next) => {
       method: req.method,
       url: req.originalUrl || req.url,
       userAgent: req.headers["user-agent"],
-      timestamp: new Date()
+      timestamp: new Date(),
+      requestBodies: req.body || {}
     };
 
     // Save asynchronously, don't block the request
