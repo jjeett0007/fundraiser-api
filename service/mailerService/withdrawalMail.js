@@ -16,7 +16,7 @@ const fundraiseWithdrawalMail = async (data) => {
             body, p, h1, h2, h3, h4, h5, h6, td, a {
                 margin: 0;
                 padding: 0;
-                font-family: 'Baloo 2', cursive;
+                font-family: 'Times New Roman', cursive;
                 color: #0F1A2C;
             }
 
@@ -52,7 +52,7 @@ const fundraiseWithdrawalMail = async (data) => {
         </style>
     </head>
 
-<body style="margin: 0; padding: 0; font-family: 'Baloo 2', cursive; line-height: 1.6; background-color: #F5ECD9;">
+<body style="margin: 0; padding: 0; font-family: 'Times New Roman', cursive; line-height: 1.6; background-color: #F5ECD9;">
     <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #FFFFFF;">
         <!-- Header -->
         <div style="text-align: center; padding: 20px 0;">

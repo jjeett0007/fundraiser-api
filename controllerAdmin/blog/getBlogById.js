@@ -15,4 +15,4 @@ const getBlogByIdController = catchAsync(async (req, res) => {
   }
 });
 
-module.export = getBlogByIdController;
+module.exports = getBlogByIdController;

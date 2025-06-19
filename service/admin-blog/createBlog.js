@@ -1,6 +1,7 @@
 const { Blog } = require("../../model/index");
 
 const createNewBlog = async (userId, data) => {
+  console.log(data.contentJson);
   try {
     await Blog.create({ ...data, createdBy: userId });
 

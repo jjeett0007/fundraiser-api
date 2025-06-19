@@ -16,4 +16,4 @@ const deleteBlogController = catchAsync(async (req, res) => {
   }
 });
 
-module.export = deleteBlogController;
+module.exports = deleteBlogController;

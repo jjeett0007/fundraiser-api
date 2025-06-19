@@ -11,31 +11,7 @@ const fileSchema = new mongoose.Schema(
 const contentJsonSchema = new mongoose.Schema(
   {
     root: {
-      children: [
-        {
-          children: [
-            {
-              detail: Number,
-              format: Number,
-              mode: String,
-              style: String,
-              text: String,
-              type: String,
-              version: Number
-            }
-          ],
-          direction: String,
-          format: String,
-          indent: Number,
-          type: String,
-          version: Number
-        }
-      ],
-      direction: String,
-      format: String,
-      indent: Number,
-      type: String,
-      version: Number
+      type: mongoose.Schema.Types.Mixed
     }
   },
   { _id: false }
