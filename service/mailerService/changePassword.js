@@ -2,15 +2,15 @@ const { sendEmail } = require("../../lib/smtp");
 const config = require("../../config/index");
 
 const changePassword = async (data) => {
-    const { email, token } = data;
+  const { email, token } = data;
 
-    const subject = "Reset Password link";
+  const subject = "Reset Password link";
 
-    const link = `${config.protocol.frontend_origin}/reset-password?${token}`;
+  const link = `${config.protocol.frontend_origin}/reset-password?token=${token}`;
 
-    const html = `
+  const html = `
    <!DOCTYPE html>
-<html lang="en">
+    <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Change Password</title>
@@ -19,7 +19,7 @@ const changePassword = async (data) => {
             body, p, h1, h2, h3, h4, h5, h6, td, a {
                 margin: 0;
                 padding: 0;
-                font-family: 'Baloo 2', cursive;
+                font-family: 'Times New Roman', cursive;
                 color: #0F1A2C;
             }
 
@@ -54,7 +54,7 @@ const changePassword = async (data) => {
             }
         </style>
     </head>
-<body style="margin: 0; padding: 0; font-family: 'Baloo 2', cursive; line-height: 1.6; background-color: #F5ECD9;">
+<body style="margin: 0; padding: 0; font-family: 'Times New Roman', cursive; line-height: 1.6; background-color: #F5ECD9;">
     <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #FFFFFF;">
         <!-- Header -->
         <div style="text-align: center; padding: 20px 0;">
@@ -99,7 +99,7 @@ const changePassword = async (data) => {
 </html>
   `;
 
-    await sendEmail(email, subject, html);
+  await sendEmail(email, subject, html);
 };
 
 module.exports = changePassword;

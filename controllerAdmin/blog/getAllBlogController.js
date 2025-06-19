@@ -14,4 +14,4 @@ const getAllBlogsController = catchAsync(async (req, res) => {
   }
 });
 
-module.export = getAllBlogsController;
+module.exports = getAllBlogsController;

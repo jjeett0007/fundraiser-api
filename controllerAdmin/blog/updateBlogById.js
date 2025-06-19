@@ -15,4 +15,4 @@ const updateBlogController = catchAsync(async (req, res) => {
   }
 });
 
-module.export = updateBlogController;
+module.exports = updateBlogController;

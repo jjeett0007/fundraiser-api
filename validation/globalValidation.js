@@ -184,10 +184,6 @@ const userInfoValidation = {
       "any.required": "Selfie is required",
       "string.uri": "Selfie must be a valid URI"
     }),
-    // livenessVideo: Joi.string().uri().required().messages({
-    //   "any.required": "Liveness video is required",
-    //   "string.uri": "Liveness video must be a valid URI",
-    // }),
     documentData: Joi.object({
       frontView: Joi.string().uri().required().messages({
         "any.required": "Front view is required",
@@ -244,6 +240,41 @@ const deleteManyUsersByMail = {
   })
 };
 
+const contentJsonSchema = Joi.object({
+  root: Joi.alternatives()
+    .try(
+      Joi.object({
+        children: Joi.array().items(
+          Joi.object({
+            children: Joi.array().items(
+              Joi.object({
+                detail: Joi.number(),
+                format: Joi.number(),
+                mode: Joi.string().allow(""),
+                style: Joi.string().allow(""),
+                text: Joi.string().allow(""),
+                type: Joi.string().allow(""),
+                version: Joi.number()
+              })
+            ),
+            direction: Joi.string().allow(""),
+            format: Joi.string().allow(""),
+            indent: Joi.number().allow(""),
+            type: Joi.string().allow(""),
+            version: Joi.number()
+          })
+        ),
+        direction: Joi.string().allow(""),
+        format: Joi.string().allow(""),
+        indent: Joi.number(),
+        type: Joi.string().allow(""),
+        version: Joi.number()
+      }),
+      Joi.any()
+    )
+    .required()
+});
+
 const blogValidation = {
   body: Joi.object().keys({
     title: Joi.string().required().trim().messages({
@@ -268,42 +299,24 @@ const blogValidation = {
       .valid("published", "draft", "archived")
       .default("draft"),
     publishNow: Joi.boolean().default(false),
-    contentJson: Joi.object({
-      root: Joi.object({
-        children: Joi.array().items(
-          Joi.object({
-            children: Joi.array().items(
-              Joi.object({
-                detail: Joi.number(),
-                format: Joi.number(),
-                mode: Joi.string(),
-                style: Joi.string(),
-                text: Joi.string(),
-                type: Joi.string(),
-                version: Joi.number()
-              })
-            ),
-            direction: Joi.string(),
-            format: Joi.string(),
-            indent: Joi.number(),
-            type: Joi.string(),
-            version: Joi.number()
-          })
-        ),
-        direction: Joi.string(),
-        format: Joi.string(),
-        indent: Joi.number(),
-        type: Joi.string(),
-        version: Joi.number()
-      })
-    }).optional(),
+    contentJson: contentJsonSchema.required(),
     contentHtml: Joi.string().allow("").optional()
   })
 };
 
 const blogUpdateValidation = {
-  body: blogValidation.body.fork(["title", "slug"], (schema) =>
-    schema.optional()
+  body: blogValidation.body.fork(
+    [
+      "title",
+      "slug",
+      "contentJson",
+      "contentHtml",
+      "featuredImage",
+      "excerpt",
+      "tags",
+      "category"
+    ],
+    (schema) => schema.optional()
   )
 };
 
@@ -317,6 +330,29 @@ const blogIdValidation = {
         "string.pattern.base": "Blog ID must be a valid MongoDB ObjectId"
       })
   })
+};
+
+const analysisValidation = {
+  params: Joi.object().keys({
+    analysisId: Joi.string()
+      .pattern(/^[0-9a-fA-F]{24}$/)
+      .required()
+      .messages({
+        "any.required": "Analysis ID is required",
+        "string.pattern.base": "Analysis ID must be a valid MongoDB ObjectId"
+      })
+  })
+};
+
+const analysisUpdateValidation = {
+  body: Joi.object()
+    .keys({
+      title: Joi.string().trim(),
+      description: Joi.string(),
+      metrics: Joi.object(),
+      status: Joi.string().valid("active", "archived")
+    })
+    .min(1)
 };
 
 module.exports = {
@@ -333,5 +369,7 @@ module.exports = {
   validateUserId,
   blogValidation,
   blogUpdateValidation,
-  blogIdValidation
+  blogIdValidation,
+  analysisValidation,
+  analysisUpdateValidation
 };

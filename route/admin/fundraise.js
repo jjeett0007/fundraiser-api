@@ -4,13 +4,8 @@ const validate = require("../../middleware/validate");
 const isAdminAuthenticated = require("../../middleware/verifyAdminToken");
 
 const {
-  getAllFundRaiseController,
+  getAllFundRaiseController
 } = require("../../controllerAdmin/fundraiseDb/index");
-
-const {
-  adminLoginController,
-  adminSignupValidation,
-} = require("../../validation/authValid");
 
 router.get("/get-all", getAllFundRaiseController);
 

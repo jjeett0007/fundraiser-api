@@ -5,6 +5,9 @@ const adminDb = require("./admin-db");
 const users = require("./users");
 const statics = require("./statics");
 const upload = require("./upload");
+const blog = require("./blog");
+
+const analysis = require('./analysis');
 
 const router = express.Router();
 
@@ -32,6 +35,14 @@ const defaultRoutes = [
   {
     path: "/upload",
     route: upload
+  },
+  {
+    path: "/blog",
+    route: blog
+  },
+  {
+    path: "/analysis",
+    route: analysis
   }
 ];
 

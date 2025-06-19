@@ -1,6 +1,6 @@
 const { Blog } = require("../../model/index");
 
-const changeBlogState = async (userId, blogId, body) => {
+const changeBlogState = async (blogId, body) => {
   const { status } = body;
   try {
     const blog = await Blog.findByIdAndUpdate(

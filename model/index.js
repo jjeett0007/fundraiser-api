@@ -10,6 +10,7 @@ const FundRaiseVerify = require("./fundraise/verification");
 const RateLimit = require("./rateLimit/index");
 const ActivityLog = require("./activityLog/index");
 const Blog = require("./blogs/index");
+const Analysis = require("./Analysis/index");
 
 module.exports = {
   FundRaise,
@@ -23,5 +24,6 @@ module.exports = {
   FundRaiseVerify,
   RateLimit,
   ActivityLog,
-  Blog
+  Blog,
+  Analysis
 };
