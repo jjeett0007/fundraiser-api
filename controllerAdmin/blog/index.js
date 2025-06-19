@@ -4,6 +4,7 @@ const createBlogController = require("./createBlogController");
 const deleteBlogController = require("./deleteBlogController");
 const getAllBlogsController = require("./getAllBlogController");
 const getBlogByIdController = require("./getBlogById");
+const getBlogStaticsController = require("./blogStatics");
 
 module.exports = {
   updateBlogController,
@@ -11,5 +12,6 @@ module.exports = {
   createBlogController,
   deleteBlogController,
   getAllBlogsController,
-  getBlogByIdController
+  getBlogByIdController,
+  getBlogStaticsController
 };

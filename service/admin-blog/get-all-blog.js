@@ -15,14 +15,23 @@ const getAllBlogs = async (query) => {
       limit: 20,
       includeUser: false,
       exclude: [
-        "createdBy",
         "slug",
         "content",
         "tags",
         "metaDescription",
+        "featuredImage",
         "keywords",
         "contentJson",
-        "contentHtml"
+        "contentHtml",
+        "createdAt",
+        "__v"
+      ],
+      populate: [
+        {
+          path: "createdBy",
+          select:
+            "-_id profile.firstName profile.lastName profile.displayName profileImages"
+        }
       ]
     });
 

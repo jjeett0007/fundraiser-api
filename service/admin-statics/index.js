@@ -3,7 +3,8 @@ const {
   User,
   FundRaiseDonor,
   FundRaiseVerify,
-  WaitList
+  WaitList,
+  Blog
 } = require("../../model/index");
 
 const getStatics = async () => {
@@ -354,7 +355,7 @@ const getStatics = async () => {
         FundRaiseDonor.aggregate([
           {
             $match: {
-               isFundPaid: true,
+              isFundPaid: true,
               createdAt: { $gte: start, $lt: end }
             }
           },

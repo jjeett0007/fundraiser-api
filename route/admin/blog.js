@@ -9,7 +9,8 @@ const {
   createBlogController,
   deleteBlogController,
   getAllBlogsController,
-  getBlogByIdController
+  getBlogByIdController,
+  getBlogStaticsController
 } = require("../../controllerAdmin/blog/index");
 
 const {
@@ -22,6 +23,8 @@ router
   .route("/")
   .post(isAdminAuthenticated, validate(blogValidation), createBlogController)
   .get(isAdminAuthenticated, getAllBlogsController);
+
+router.get("/statics", isAdminAuthenticated, getBlogStaticsController);
 
 router
   .route("/:blogId")
