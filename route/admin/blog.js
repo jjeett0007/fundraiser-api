@@ -5,7 +5,6 @@ const isAdminAuthenticated = require("../../middleware/verifyAdminToken");
 
 const {
   updateBlogController,
-  changeBlogStateController,
   createBlogController,
   deleteBlogController,
   getAllBlogsController,
@@ -40,10 +39,11 @@ router
     validate(blogIdValidation),
     deleteBlogController
   )
-  .put(
-    isAdminAuthenticated,
-    validate(blogIdValidation),
-    changeBlogStateController
-  );
+  .put(isAdminAuthenticated, validate(blogIdValidation), async () => {
+    return {
+      code: 400,
+      message: "try again"
+    };
+  });
 
 module.exports = router;

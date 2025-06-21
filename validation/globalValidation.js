@@ -314,7 +314,8 @@ const blogUpdateValidation = {
       "featuredImage",
       "excerpt",
       "tags",
-      "category"
+      "category",
+      "publishNow"
     ],
     (schema) => schema.optional()
   )
@@ -355,6 +356,15 @@ const analysisUpdateValidation = {
     .min(1)
 };
 
+const blogSlugValidation = {
+  params: Joi.object().keys({
+    slug: Joi.string().required().trim().messages({
+      "any.required": "Slug is required",
+      "string.empty": "Slug cannot be empty"
+    })
+  })
+};
+
 module.exports = {
   changePasswordValidation,
   emailOnlyValidation,
@@ -371,5 +381,6 @@ module.exports = {
   blogUpdateValidation,
   blogIdValidation,
   analysisValidation,
-  analysisUpdateValidation
+  analysisUpdateValidation,
+  blogSlugValidation
 };

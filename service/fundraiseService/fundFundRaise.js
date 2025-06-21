@@ -8,7 +8,7 @@ const fundFundRaise = async ({
   amount,
   note,
   anonymous = false,
-  id,
+  id
 }) => {
   try {
     const fundRaise = await FundRaise.findById(id);
@@ -16,7 +16,7 @@ const fundFundRaise = async ({
     if (!fundRaise) {
       return {
         code: 404,
-        message: "Nor Found",
+        message: "Nor Found"
       };
     }
 
@@ -24,34 +24,44 @@ const fundFundRaise = async ({
       {
         condition: !fundRaise,
         code: 404,
-        message: "Fundraise not found.",
+        message: "Fundraise not found."
       },
       {
         condition: !fundRaise.isFundRaiseStarted,
         code: 400,
-        message: "Fundraise not started.",
+        message: "Fundraise not started."
+      },
+      {
+        condition: fundRaise.isFundRaisedStoppedByAdmin,
+        code: 400,
+        message: "Fundraise stopped by Admin, suspected fraud"
+      },
+      {
+        condition: fundRaise.isFundRaiseEndedByAdmin,
+        code: 400,
+        message: "Fundraise stopped by Admin, suspected fraud"
       },
       {
         condition: fundRaise.isFundRaiseDeactivated,
         code: 400,
-        message: "Fundraise is deactivated.",
+        message: "Fundraise is deactivated."
       },
       {
         condition: fundRaise.isFundRaisedStopped,
         code: 400,
-        message: "Fundraise stopped.",
+        message: "Fundraise stopped."
       },
       {
         condition: fundRaise.isFundRaiseEnded,
         code: 400,
-        message: "Fundraise ended.",
+        message: "Fundraise ended."
       },
       {
         condition:
           fundRaise.statics.totalRaised >= fundRaise.fundMetaData.goalAmount,
         code: 403,
-        message: "Fundraise goal already reached.",
-      },
+        message: "Fundraise goal already reached."
+      }
     ];
 
     for (const check of errorChecks) {
@@ -66,7 +76,7 @@ const fundFundRaise = async ({
               isFundRaiseFundedCompletely: true,
               isFundRaisedStopped: true,
               isFundRaiseActive: false,
-              isFundRaisedEndDate: new Date(),
+              isFundRaisedEndDate: new Date()
             },
             { new: true }
           );
@@ -89,15 +99,15 @@ const fundFundRaise = async ({
       anonymous,
       fundRaiseId: fundRaise._id.toString(),
       walletAddress: paymentReference.address,
-      walletInfo: paymentReference.id,
+      walletInfo: paymentReference.id
     });
 
     return {
       code: 200,
       message: "Payment data generated",
       data: {
-        donateId: getFundData._id.toString(),
-      },
+        donateId: getFundData._id.toString()
+      }
     };
   } catch (error) {
     return { code: 500, message: "Server error.", error: error.message };

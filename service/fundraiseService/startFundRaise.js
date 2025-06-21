@@ -4,13 +4,15 @@ const { fundraiseLive } = require("../mailerService/index");
 
 const startFundRaise = async ({ id, fundraiseId }) => {
   try {
-    const fundRaise = await FundRaise.findById(fundraiseId)
-      .populate("createdBy", "email profile _id");
+    const fundRaise = await FundRaise.findById(fundraiseId).populate(
+      "createdBy",
+      "email profile _id"
+    );
 
     if (!fundRaise) {
       return {
         code: 404,
-        message: "Not Found",
+        message: "Not Found"
       };
     }
 
@@ -18,23 +20,34 @@ const startFundRaise = async ({ id, fundraiseId }) => {
       {
         condition: !fundRaise,
         code: 404,
-        message: "Fundraise not found.",
+        message: "Fundraise not found."
       },
       {
         condition: fundRaise.createdBy._id.toString() !== id,
         code: 403,
-        message: "Unauthorized.",
+        message: "Unauthorized."
+      },
+      {
+        condition: fundRaise.isFundRaisedStoppedByAdmin,
+        code: 400,
+        message: "Fundraise stopped by Admin, suspected fraud"
+      },
+      {
+        condition: fundRaise.isFundRaiseEndedByAdmin,
+        code: 400,
+        message: "Fundraise stopped by Admin, suspected fraud"
       },
       {
         condition: fundRaise.isInitialized,
         code: 400,
-        message: "Fundraise already started.",
+        message: "Fundraise already started."
       },
       {
         condition: fundRaise.isFundRaisedStopped,
         code: 400,
-        message: "Fundraise already stopped.",
+        message: "Fundraise already stopped."
       },
+
       // {
       //   condition:
       //     !fundRaise.verify?.verificationId ||
@@ -50,13 +63,13 @@ const startFundRaise = async ({ id, fundraiseId }) => {
       {
         condition: fundRaise.isFundRaiseEnded,
         code: 400,
-        message: "Fundraise already ended.",
+        message: "Fundraise already ended."
       },
       {
         condition: fundRaise.isFundRaiseStarted,
         code: 400,
-        message: "Fundraise already started.",
-      },
+        message: "Fundraise already started."
+      }
     ];
 
     const error = errorChecks.find((check) => check.condition);
@@ -67,9 +80,8 @@ const startFundRaise = async ({ id, fundraiseId }) => {
 
     const { createdBy } = fundRaise;
 
-
     process.nextTick(async () => {
-      const newDate = new Date()
+      const newDate = new Date();
 
       const getContractAddress = await generateAddress("contract");
 
@@ -84,7 +96,7 @@ const startFundRaise = async ({ id, fundraiseId }) => {
             isFundRaiseEnded: false,
             isFundRaiseActive: true,
             isFundRaiseFundsComplete: false,
-            isFundRaisedStartedDate: new Date(),
+            isFundRaisedStartedDate: new Date()
           },
           { new: true }
         ),
@@ -97,10 +109,8 @@ const startFundRaise = async ({ id, fundraiseId }) => {
           goalAmount: fundRaise.fundMetaData.goalAmount,
           fundraiseId: fundRaise._id.toString()
         })
-      ])
-    })
-
-
+      ]);
+    });
 
     return { code: 200, message: "Fundraise started." };
   } catch (error) {

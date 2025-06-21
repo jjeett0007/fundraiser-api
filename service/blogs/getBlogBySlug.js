@@ -6,7 +6,7 @@ const getBlogBySlug = async (slug) => {
       { slug },
       { $inc: { views: 1 } },
       { new: true }
-    ).select("-createdBy");
+    ).select("-createdBy -contentHtml -_id");
 
     if (!blog) {
       return {
