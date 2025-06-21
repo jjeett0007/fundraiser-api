@@ -183,6 +183,11 @@ const fundRaiseDb = new mongoose.Schema(
       default: null
     },
 
+    isFundRaiseLive: {
+      type: Boolean,
+      default: false
+    },
+
     isFundRaiseActive: {
       type: Boolean,
       default: false
@@ -198,6 +203,16 @@ const fundRaiseDb = new mongoose.Schema(
       default: false
     },
 
+    isFundRaisedStoppedByAdmin: {
+      type: Boolean,
+      default: false
+    },
+
+    isFundRaiseEndedByAdmin: {
+      type: Boolean,
+      default: false
+    },
+
     isFundRaiseDeleted: {
       type: Boolean,
       default: false
@@ -206,6 +221,16 @@ const fundRaiseDb = new mongoose.Schema(
     isFundRaiseFundsComplete: {
       type: Boolean,
       default: false
+    },
+
+    isFundRaiseWithdrawn: {
+      type: Boolean,
+      default: false
+    },
+
+    isFundRaiseWithdrawable: {
+      type: Boolean,
+      default: true
     },
 
     isFundRaiseFundedCompletely: {

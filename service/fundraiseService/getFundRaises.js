@@ -13,6 +13,11 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
     filter.isFundRaiseDeactivated = false;
     filter.isFundRaisedStopped = false;
     filter.isFundRaiseFundsComplete = false;
+    filter.isFundRaisedStoppedByAdmin = false;
+    filter.isFundRaiseLive = true;
+    filter.isFundRaiseWithdrawable = true;
+    filter.isFundRaiseWithdrawn = false;
+    filter.isFundRaiseEndedByAdmin = false;
     filter["verify.isFundRaiseVerified"] = false;
   }
 
@@ -40,6 +45,10 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "isFundRaiseFundsComplete",
         "isFundRaiseFundedCompletely",
         "isFundRaisedEndDate",
+        "isFundRaiseWithdrawable",
+        "isFundRaiseWithdrawn",
+        "isFundRaisedStoppedByAdmin",
+        "isFundRaiseEndedByAdmin",
         "isDeleted",
         "verify.verificationId",
         "verify.isFundRaiseVerifiedDate",
@@ -65,7 +74,7 @@ const getAllFundRaises = async ({ page = 1, category, createdBy }) => {
         "reportCount",
         "signature",
         "fundraiseWithdrawLink"
-      ],
+      ]
     });
 
     return fundRaises;

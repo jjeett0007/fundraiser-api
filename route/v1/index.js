@@ -8,6 +8,7 @@ const password = require("./password");
 const waitList = require("./waitlist");
 const fundRaise = require("./fundraise");
 const hookesLaw = require("./hooks");
+const blog = require("./blog");
 
 const router = express.Router();
 
@@ -47,6 +48,10 @@ const defaultRoutes = [
   {
     path: "/hooks",
     route: hookesLaw
+  },
+  {
+    path: "/blog",
+    route: blog
   }
 ];
 

@@ -9,7 +9,8 @@ const updateBlog = async (id, data) => {
     contentJson,
     contentHtml,
     tags,
-    category
+    category,
+    publishNow
   } = data;
   try {
     const updateFields = {};
@@ -21,6 +22,17 @@ const updateBlog = async (id, data) => {
     if (contentHtml) updateFields.contentHtml = contentHtml;
     if (tags) updateFields.tags = tags;
     if (category) updateFields.category = category;
+    if (publishNow) {
+      if (publishNow === true) {
+        updateFields.publishNow = publishNow;
+        updateFields.status = "published";
+      }
+
+      if (publishNow === false) {
+        updateFields.publishNow = publishNow;
+        updateFields.status = "draft";
+      }
+    }
 
     const blog = await Blog.findByIdAndUpdate(
       id,

@@ -30,9 +30,24 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
         message: "Fundraise not started."
       },
       {
+        condition: fundRaise.isFundRaisedStoppedByAdmin,
+        code: 400,
+        message: "Fundraise stopped by Admin, suspected fraud"
+      },
+      {
+        condition: fundRaise.isFundRaiseEndedByAdmin,
+        code: 400,
+        message: "Fundraise stopped by Admin, suspected fraud"
+      },
+      {
         condition: fundRaise.isFundRaiseFundsComplete,
         code: 400,
         message: "Fundraise already completed."
+      },
+      {
+        condition: !fundRaise.isFundRaiseWithdrawable,
+        code: 400,
+        message: "Fundraise is not withdrawable at the moment"
       },
       // {
       //   condition:
@@ -91,6 +106,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
               isFundRaisedEndDate: newDate,
               isFundRaiseFunded: true,
               isFundRaisedStopped: true,
+              isFundRaiseWithdrawn: true,
               isFundRaiseFundsComplete: true,
               isFundRaiseFundedCompletely: true,
               signature: data.signature,
@@ -130,7 +146,7 @@ const withdrawFundRaised = async ({ id, fundraiseId }) => {
 
     return {
       code: 200,
-      message: "withdrawal is in process"
+      message: "withdrawal in process"
     };
   } catch (error) {
     return error;

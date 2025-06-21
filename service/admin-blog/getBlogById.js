@@ -2,11 +2,7 @@ const { Blog } = require("../../model/index");
 
 const getBlogById = async (id) => {
   try {
-    const blog = await Blog.findOneAndUpdate(
-      { _id: id },
-      { $inc: { views: 1 } },
-      { new: true }
-    ).select("-createdBy");
+    const blog = await Blog.findById(id).select("-createdBy");
 
     if (!blog) {
       return {
