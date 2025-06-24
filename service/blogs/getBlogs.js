@@ -2,7 +2,9 @@ const { Blog } = require("../../model/index");
 const getPaginatedData = require("../../utils/paginationQueries");
 
 const getAllBlogs = async (query) => {
-  const filters = {};
+  const filters = {
+    publishNow: true
+  };
 
   try {
     const blogs = await getPaginatedData({
